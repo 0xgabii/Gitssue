@@ -4,7 +4,7 @@ Manage your github issue by chrome extension
 
 ## TODO
 
-- Github login
+- ~~Github login~~
 - Manage issue
   - CRUD
   - Markdown view + Resizing space
