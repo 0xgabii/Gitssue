@@ -22,8 +22,6 @@ import firebase from './helpers/firebase';
 
 import CotentsView from './components/CotentsView';
 
-const database = firebase.database();
-
 export default {
   name: 'app',
   computed: {
@@ -36,7 +34,7 @@ export default {
   },
   methods: {
     ...mapActions('auth', [
-      'signIn',
+      'authentication',
     ]),
     ...mapActions('ui', [
       'changeUI',
@@ -44,11 +42,7 @@ export default {
   },
   created() {
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
-          this.signIn(snapshot.val());
-        });
-      }
+      this.authentication(user);
     });
   },
   components: {
