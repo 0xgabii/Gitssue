@@ -1,0 +1,24 @@
+.mditor {
+  padding: 10px;
+
+  textarea {
+    display: block;
+
+    padding: 7px 4px;  
+
+    width: 100%;
+    min-height: 150px;
+    
+    white-space: pre;
+
+    resize: none;
+    outline: none;
+
+    font-size: 16px;
+  
+    border: 3px solid #bfbfbf;
+    border-radius: 3px;
+  
+    box-sizing: border-box;
+  }
+}
