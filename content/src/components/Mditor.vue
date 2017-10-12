@@ -1,36 +1,72 @@
 <template>
   <div class="mditor">
-    <textarea 
-      v-model="texts"
-      @input="autoHeight"
-      @keydown.tab.prevent="indentText"
-    />  
+
+    <ul class="mditor-tab">
+      <li
+        v-for="tab in tabs"
+        :class="{ active: mode === tab }"
+        :key="tab"
+        @click="mode = tab">
+        {{ tab }}
+      </li>
+    </ul>
+
+    <div 
+      class="mditor-writeBox"
+      v-if="mode === 'write'">
+      <textarea 
+        v-model="texts"
+        ref='textarea'
+        @input="autoHeight($event.target)"
+        @keydown.tab.prevent="indentText"
+      />
+    </div>
+
+    <div 
+      class="mditor-previewBox" 
+      v-else
+      v-html="parsedText"
+    />
+    
   </div>
 </template>
 
 <script>
+import marked from 'marked';
+import hljs from 'highlight.js';
+
+marked.setOptions({
+  highlight: code => hljs.highlightAuto(code).value,
+  breaks: true,
+});
+
 export default {
   name: 'Mditor',
-  props: {
-    value: {
-      type: String,
-      default: '',
+  data: () => ({
+    tabs: ['write', 'preview'],
+
+    mode: 'write',
+
+    texts: '',
+  }),
+  computed: {
+    parsedText() {
+      return marked(this.lol);
     },
   },
-  computed: {
-    texts: {
-      get() {
-        return this.value;
-      },
-      set(v) {
-        this.$emit('input', v);
-      },
+  watch: {
+    mode(v) {
+      if (v === 'write') {
+        this.$nextTick(() => {
+          this.autoHeight(this.$refs.textarea);
+        });
+      }
     },
   },
   methods: {
-    autoHeight(e) {
-      e.target.style.height = 'auto';
-      e.target.style.height = `${e.target.scrollHeight}px`;
+    autoHeight(target) {
+      target.style.height = 'auto';
+      target.style.height = `${target.scrollHeight}px`;
     },
     indentText(e) {
       const {
@@ -39,8 +75,8 @@ export default {
         value: inputVal,
       } = e.target;
 
-      // tab = 4 spaces
-      const indent = '    ';
+      // 2 spaces
+      const indent = '  ';
 
       let selectionPrev = inputVal.substring(0, startPos);
       let selection = inputVal.substring(startPos, endPos);
