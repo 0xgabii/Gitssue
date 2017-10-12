@@ -33,8 +33,6 @@ export default {
       e.target.style.height = `${e.target.scrollHeight}px`;
     },
     indentText(e) {
-      // https://github.com/kazzkiq/CodeFlask.js/blob/master/src/codeflask.js
-      // CodeFlask.prototype.handleInput
       const {
         selectionStart: startPos,
         selectionEnd: endPos,
@@ -53,8 +51,8 @@ export default {
         // find line start position
         const lineStartPos = startPos - selectionPrev.split('\n').pop().length;
 
-        const startIndentLength = indent.length;
-        const endIndentLength = indent.length;
+        let startIndentLength = indent.length;
+        let endIndentLength = indent.length;
 
         // indent
         if (!e.shiftKey) {
@@ -67,7 +65,28 @@ export default {
 
         // unindent - shift + tab
         } else {
-          //
+          // line start with indent
+          if (inputVal.substr(lineStartPos, 1) === ' ') {
+            startIndentLength = -startIndentLength;
+
+            // Indent is in start of selection
+            if (lineStartPos === startPos) {
+              startIndentLength = 0;
+              endIndentLength = 0;
+              selection = selection.substring(indent.length);
+
+            // Indent is before selection
+            } else {
+              endIndentLength = -endIndentLength;
+              selectionPrev = selectionPrev.substring(0, lineStartPos) +
+                              selectionPrev.substring(lineStartPos + indent.length);
+            }
+          } else {
+            startIndentLength = 0;
+            endIndentLength = 0;
+          }
+
+          selection = selection.replace(new RegExp(`\n${indent}`, 'g'), '\n');
         }
 
         // set indented value
@@ -79,8 +98,8 @@ export default {
       // just tab not selection
       } else {
         e.target.value = selectionPrev + indent + selectionNext;
-        e.target.selectionStart = startPos + indent;
-        e.target.selectionEnd = startPos + indent;
+        e.target.selectionStart = startPos + indent.length;
+        e.target.selectionEnd = startPos + indent.length;
       }
     },
   },
