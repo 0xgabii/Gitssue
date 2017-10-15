@@ -10,7 +10,10 @@ Manage your github issue by chrome extension
   - Markdown view + Resizing space
 - Customizable position (sticky) by user
 - Editor like notepad
-    - tab, shift + tab for indent/unindent
+    - ~~tab, shift + tab for indent/unindent~~
     - ctrl + z, ctrl + y for undo/redo
     - autosave
     - line number support?
+    - Screenshot
+      - visible part or full-page
+      - crop
