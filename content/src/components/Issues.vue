@@ -11,8 +11,6 @@
 </template>
 
 <script>
-import { markdown } from 'markdown';
-
 export default {
   name: 'Issues',
   props: {
@@ -32,7 +30,7 @@ export default {
         id,
         title,
         html_url,
-        content: markdown.toHTML(body),
+        content: body,
       }));
     },
   },
