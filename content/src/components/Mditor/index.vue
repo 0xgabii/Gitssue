@@ -1,15 +1,22 @@
 <template>
   <div class="mditor">
 
-    <ul class="mditor-tab">
-      <li
+    <div class="mditor-controls">
+      <div class="mditor-controls__tab">
+        <span
         v-for="tab in tabs"
         :class="{ active: mode === tab }"
         :key="tab"
         @click="mode = tab">
-        {{ tab }}
-      </li>
-    </ul>
+          {{ tab }}
+        </span>
+      </div>
+
+      <div class="mditor-controls__utils">
+        <span @click="captureStart">captureStart</span>
+        <span @click="capture">cap</span>
+      </div>
+    </div>
 
     <div 
       class="mditor-writeBox"
@@ -35,6 +42,8 @@
 import marked from 'marked';
 import hljs from 'highlight.js';
 
+import Screenshot from './screenshot';
+
 marked.setOptions({
   highlight: code => hljs.highlightAuto(code).value,
   breaks: true,
@@ -48,10 +57,12 @@ export default {
     mode: 'write',
 
     texts: '',
+
+    screenShot: undefined,
   }),
   computed: {
     parsedText() {
-      return marked(this.lol);
+      return marked(this.texts);
     },
   },
   watch: {
@@ -67,6 +78,13 @@ export default {
     autoHeight(target) {
       target.style.height = 'auto';
       target.style.height = `${target.scrollHeight}px`;
+    },
+    capture() {
+      this.screenShot.cropScreenshot();
+    },
+    captureStart() {
+      this.screenShot = new Screenshot();
+      this.screenShot.init();
     },
     indentText(e) {
       const {

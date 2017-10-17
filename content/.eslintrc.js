@@ -9,6 +9,9 @@ module.exports = {
   env: {
     browser: true,
   },
+  globals: {
+    chrome: true,
+  },
   extends: 'airbnb-base',
   // required to lint *.vue files
   plugins: [
@@ -36,6 +39,7 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'camelcase': 0,
-    'no-param-reassign': 0
+    'no-param-reassign': 0,
+    'linebreak-style': 0
   }
 }

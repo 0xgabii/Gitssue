@@ -26,7 +26,7 @@
   ],
 
   "background": {
-    "page": "./background/page.html"
+    "scripts": ["background.js"]
   },
 
   "web_accessible_resources": [
@@ -36,8 +36,8 @@
   "content_security_policy": "font-src assets-cdn.github.com",
   
   "permissions": [
-    "tabs",
-    "identity",
+    "<all_urls>",
+    "activeTab",
     "http://*/*",
     "https://*/*"
   ]
