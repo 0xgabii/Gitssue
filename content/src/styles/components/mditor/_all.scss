@@ -1,28 +1,73 @@
 .mditor {
-  padding: 10px;
+  margin: 10px;
+  border: 1px solid #24292e;
+  border-radius: 3px;
+  background-color: white;
 
-  textarea {
-    display: block;
+  &-controls {
+    display: flex;
+    justify-content: space-between;
 
-    padding: 7px 4px;  
+    background-color: #24292e;
 
-    width: 100%;
-    min-height: 150px;
+    &__tab {
+      padding: 3px 10px;
+      
+      span {
+        display: inline-block;
+        padding: 8px 10px 6px 10px;
+
+        border-bottom: 2px solid transparent;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: capitalize;
+        cursor: pointer;
+
+        transition: all 0.2s;
+
+        &.active {
+          border-bottom: 3px solid #ec407a;          
+          color: white;
+        }
+      }
+    }
+
+    &__utils {
+      color: white;
+    }
+  }
+
+  &-writeBox {
+
+
+    textarea {
+      display: block;
+  
+      padding: 10px 10px 0 10px;  
+  
+      width: 100%;
+      min-height: 150px;
+      
+      white-space: pre;
+  
+      resize: none;
+      outline: none;
+  
+      font: inherit;
+      font-size: 16px;
     
-    white-space: pre;
-
-    resize: none;
-    outline: none;
-
-    font-size: 16px;
-  
-    border: 3px solid #bfbfbf;
-    border-radius: 3px;
-  
-    box-sizing: border-box;
+      border-radius: 3px;
+    
+      box-sizing: border-box;
+    }
   }
 
   &-previewBox {
+    padding: 5px 15px;
+    min-height: 140px;
+
+    & > *:first-child {
+      margin-top: 10px;
+    }
 
     @import 'markdown-style';
     @import 'markdown-code-style';
