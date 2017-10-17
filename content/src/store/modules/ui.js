@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    extend: false,
+    extend: true,
 
     position: {
       right: 25,
@@ -29,7 +29,7 @@ export default {
         return {
           ...positionStyle,
           width: `${resize.width}px`,
-          height: `${resize.height}px`,
+          minHeight: `${resize.height}px`,
         };
       }
 
