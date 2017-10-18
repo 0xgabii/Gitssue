@@ -16,7 +16,7 @@
       ],
       "js": [
         "./content/dist/static/js/manifest.js",
-        "./content/dist/static/js/vendor.js",
+        "./content/dist/static/js/vendor_encoded.js",
         "./content/dist/static/js/app.js"      
       ],
       "css": [
@@ -33,11 +33,17 @@
     "./content/dist/static/css/app.css"
   ],
 
+  "oauth2": {
+    "client_id": "868497383059-aqol75cjtsi69jiralrj1827cp7l87nu.apps.googleusercontent.com",
+    "scopes": []
+  },
+
   "content_security_policy": "font-src assets-cdn.github.com",
   
   "permissions": [
     "<all_urls>",
     "activeTab",
+    "identity",
     "http://*/*",
     "https://*/*"
   ]

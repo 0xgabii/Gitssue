@@ -97,9 +97,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       }
     ]),
     // for chrome extension encoding error when use firebase 
-    new EncodingPlugin({
-      encoding: 'iso-8859-1'
-    }),
+    new EncodingPlugin('UTF-8'),
   ]
 })
 
