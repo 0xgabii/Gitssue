@@ -40,6 +40,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'camelcase': 0,
     'no-param-reassign': 0,
-    'linebreak-style': 0
+    'linebreak-style': 0,
+    "class-methods-use-this": 0
   }
 }
