@@ -11,22 +11,25 @@ export default class Screenshot {
 
   init() {
     this.injectCanvas();
+    this.setButtonDisplay(false);
     this.getScreenshot(true);
   }
 
   injectCanvas() {
-    const canvas = document.getElementById(this.canvasId) || document.createElement('canvas');
-
-    if (!document.getElementById(this.canvasId)) {
-      canvas.id = this.canvasId;
-    }
+    const canvas = document.createElement('canvas');
+    canvas.id = this.canvasId;
 
     this.canvas = canvas;
   }
 
+  setButtonDisplay(visible) {
+    document.getElementById('vGitssue').style.display = visible ? 'block' : 'none';
+  }
+
   getScreenshot(firstTime) {
     const elm = document.scrollingElement;
-    const { scrollTop, clientHeight, clientWidth, scrollHeight } = elm;
+    const { scrollTop, clientWidth, scrollHeight } = elm;
+    const clientHeight = window.innerHeight;
 
     if (firstTime) {
       elm.scrollTop = 0;
@@ -39,18 +42,19 @@ export default class Screenshot {
 
     setTimeout(() => {
       chrome.runtime.sendMessage(
-        'startCapture',
+        { message: 'capture' },
         (dataURL) => {
           const img = new Image();
           img.src = dataURL;
           img.onload = () => {
             this.canvas.getContext('2d').drawImage(img, 0, elm.scrollTop);
 
-            if (elm.scrollHeight > elm.scrollTop + elm.clientHeight && this.isFullScreen) {
+            if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullScreen) {
               this.getScreenshot();
             } else {
               document.body.appendChild(this.canvas);
               this.initCrop();
+              this.setButtonDisplay(true);
             }
           };
         },
@@ -65,8 +69,22 @@ export default class Screenshot {
   }
 
   cropScreenshot() {
-    console.log(this.cropper.getCroppedCanvas().toDataURL());
-    this.cropper.destroy();
+    this.uploadGDrive(this.cropper.getCroppedCanvas().toDataURL());
+    this.destroyCrop();
     // cropper.getCroppedCanvas().toBlob(blob => console.log(blob));
+  }
+
+  destroyCrop() {
+    this.cropper.destroy();
+    document.body.removeChild(this.canvas);
+  }
+
+  uploadGDrive(dataURL) {
+    chrome.runtime.sendMessage(
+      { message: 'uploadGdrive', dataURL },
+      (imgURL) => {
+        console.log(imgURL);
+      },
+    );
   }
 }

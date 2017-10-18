@@ -83,8 +83,10 @@ export default {
       this.screenShot.cropScreenshot();
     },
     captureStart() {
-      this.screenShot = new Screenshot();
-      this.screenShot.init();
+      const screenShot = new Screenshot();
+      screenShot.init();
+
+      this.screenShot = screenShot;
     },
     indentText(e) {
       const {
