@@ -15,5 +15,7 @@ Manage your github issue by chrome extension
     - autosave
     - line number support?
     - Screenshot
-      - visible part or full-page
-      - crop
+      - ~~visible part & full-page~~
+      - ~~select & crop~~
+      - ~~upload google drive & get response~~
+      - remove screenshot blurry (because of canvas bug?)
