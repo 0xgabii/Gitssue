@@ -12,7 +12,7 @@ export default class Screenshot {
   init() {
     this.injectCanvas();
     this.setButtonDisplay(false);
-    this.getScreenshot(true);
+    this.getScreenshot();
   }
 
   injectCanvas() {
@@ -26,40 +26,44 @@ export default class Screenshot {
     document.getElementById('vGitssue').style.display = visible ? 'block' : 'none';
   }
 
-  getScreenshot(firstTime) {
+  getScreenshot() {
     const elm = document.scrollingElement;
-    const { scrollTop, clientWidth, scrollHeight } = elm;
     const clientHeight = window.innerHeight;
 
-    if (firstTime) {
-      elm.scrollTop = 0;
+    const port = chrome.runtime.connect({ name: 'screenshot' });
 
-      this.canvas.width = clientWidth;
-      this.canvas.height = scrollHeight;
-    } else {
-      elm.scrollTop = scrollTop + clientHeight;
-    }
+    const scrollShot = (firstTime) => {
+      const { scrollTop, clientWidth, scrollHeight } = elm;
 
-    setTimeout(() => {
-      chrome.runtime.sendMessage(
-        { message: 'capture' },
-        (dataURL) => {
-          const img = new Image();
-          img.src = dataURL;
-          img.onload = () => {
-            this.canvas.getContext('2d').drawImage(img, 0, elm.scrollTop);
+      if (firstTime) {
+        elm.scrollTop = 0;
 
-            if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullScreen) {
-              this.getScreenshot();
-            } else {
-              document.body.appendChild(this.canvas);
-              this.initCrop();
-              this.setButtonDisplay(true);
-            }
-          };
-        },
-      );
-    }, 150);
+        this.canvas.width = clientWidth;
+        this.canvas.height = scrollHeight;
+      } else {
+        elm.scrollTop = scrollTop + clientHeight;
+      }
+
+      port.postMessage();
+    };
+
+    scrollShot(true);
+
+    port.onMessage.addListener((dataURL) => {
+      const img = new Image();
+      img.src = dataURL;
+      img.onload = () => {
+        this.canvas.getContext('2d').drawImage(img, 0, elm.scrollTop);
+
+        if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullScreen) {
+          scrollShot();
+        } else {
+          document.body.appendChild(this.canvas);
+          this.initCrop();
+          this.setButtonDisplay(true);
+        }
+      };
+    });
   }
 
   initCrop() {
@@ -71,7 +75,6 @@ export default class Screenshot {
   cropScreenshot() {
     this.uploadGDrive(this.cropper.getCroppedCanvas().toDataURL());
     this.destroyCrop();
-    // cropper.getCroppedCanvas().toBlob(blob => console.log(blob));
   }
 
   destroyCrop() {
@@ -80,11 +83,11 @@ export default class Screenshot {
   }
 
   uploadGDrive(dataURL) {
-    chrome.runtime.sendMessage(
-      { message: 'uploadGdrive', dataURL },
-      (imgURL) => {
-        console.log(imgURL);
-      },
-    );
+    const port = chrome.runtime.connect({ name: 'upload' });
+
+    port.postMessage({ dataURL });
+    port.onMessage.addListener((imgURL) => {
+      console.log(imgURL);
+    });
   }
 }
