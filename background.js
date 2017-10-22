@@ -64,7 +64,7 @@ function saveToGoogleDrive(port, dataURL) {
 }
 
 chrome.runtime.onConnect.addListener(function(port) {
-  if (port.name === 'screenshot') {
+  if (port.name === 'capture') {
     port.onMessage.addListener(() => capture(port));
   } else {
     port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));

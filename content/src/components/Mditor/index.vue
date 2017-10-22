@@ -13,8 +13,10 @@
       </div>
 
       <div class="mditor-controls__utils">
-        <span @click="captureStart">captureStart</span>
-        <span @click="capture">cap</span>
+        <span @click="startCapture('full')">full-page</span>
+        <span @click="startCapture('visible')">visible-part</span>
+
+        <span @click="cropCapture">crop</span>          
       </div>
     </div>
 
@@ -42,7 +44,7 @@
 import marked from 'marked';
 import hljs from 'highlight.js';
 
-import Screenshot from './screenshot';
+import Capture from './capture';
 
 marked.setOptions({
   highlight: code => hljs.highlightAuto(code).value,
@@ -58,7 +60,12 @@ export default {
 
     texts: '',
 
-    screenShot: undefined,
+    capture: {
+      active: false,
+      loading: false,
+      v: undefined,
+      result: undefined,
+    },
   }),
   computed: {
     parsedText() {
@@ -79,15 +86,19 @@ export default {
       target.style.height = 'auto';
       target.style.height = `${target.scrollHeight}px`;
     },
-    capture() {
-      this.screenShot.cropScreenshot();
-    },
-    captureStart() {
-      const screenShot = new Screenshot();
-      screenShot.init();
 
-      this.screenShot = screenShot;
+    startCapture(type) {
+      const capture = new Capture(type);
+      capture.init();
+
+      this.capture.v = capture;
     },
+    cropCapture() {
+      this.capture.v.crop().then((imgURL) => {
+        this.texts = `![](${imgURL})\n${this.texts}`;
+      });
+    },
+
     indentText(e) {
       const {
         selectionStart: startPos,

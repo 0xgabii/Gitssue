@@ -1,21 +1,26 @@
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.min.css';
 
-export default class Screenshot {
-  constructor(isFullScreen = true) {
-    this.canvasId = 'display_screenshot';
+export default class Capture {
+  constructor(type = 'visible') {
+    this.canvasId = 'display_capture';
     this.canvas = undefined;
-    this.isFullScreen = isFullScreen;
     this.cropper = undefined;
+
+    if (type === 'visible') {
+      this.isFullCapture = false;
+    } else {
+      this.isFullCapture = true;
+    }
   }
 
   init() {
-    this.injectCanvas();
+    this.createCanvas();
     this.setButtonDisplay(false);
-    this.getScreenshot();
+    this.getCapturedScreen();
   }
 
-  injectCanvas() {
+  createCanvas() {
     const canvas = document.createElement('canvas');
     canvas.id = this.canvasId;
 
@@ -26,17 +31,19 @@ export default class Screenshot {
     document.getElementById('vGitssue').style.display = visible ? 'block' : 'none';
   }
 
-  getScreenshot() {
+  getCapturedScreen() {
     const elm = document.scrollingElement;
     const clientHeight = window.innerHeight;
 
-    const port = chrome.runtime.connect({ name: 'screenshot' });
+    const port = chrome.runtime.connect({ name: 'capture' });
 
-    const scrollShot = (firstTime) => {
+    const captureScreen = (firstTime) => {
       const { scrollTop, clientWidth, scrollHeight } = elm;
 
       if (firstTime) {
-        elm.scrollTop = 0;
+        if (this.isFullCapture) {
+          elm.scrollTop = 0;
+        }
 
         this.canvas.width = clientWidth;
         this.canvas.height = scrollHeight;
@@ -47,7 +54,7 @@ export default class Screenshot {
       port.postMessage();
     };
 
-    scrollShot(true);
+    captureScreen(true);
 
     port.onMessage.addListener((dataURL) => {
       const img = new Image();
@@ -55,8 +62,8 @@ export default class Screenshot {
       img.onload = () => {
         this.canvas.getContext('2d').drawImage(img, 0, elm.scrollTop);
 
-        if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullScreen) {
-          scrollShot();
+        if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullCapture) {
+          captureScreen();
         } else {
           document.body.appendChild(this.canvas);
           this.initCrop();
@@ -72,12 +79,13 @@ export default class Screenshot {
     });
   }
 
-  cropScreenshot() {
-    this.uploadGDrive(this.cropper.getCroppedCanvas().toDataURL());
-    this.destroyCrop();
+  crop() {
+    const dataURL = this.cropper.getCroppedCanvas().toDataURL();
+
+    return this.uploadGDrive(dataURL);
   }
 
-  destroyCrop() {
+  destroy() {
     this.cropper.destroy();
     document.body.removeChild(this.canvas);
   }
@@ -86,8 +94,11 @@ export default class Screenshot {
     const port = chrome.runtime.connect({ name: 'upload' });
 
     port.postMessage({ dataURL });
-    port.onMessage.addListener((imgURL) => {
-      console.log(imgURL);
+
+    return new Promise((resolve) => {
+      port.onMessage.addListener((imgURL) => {
+        resolve(imgURL);
+      });
     });
   }
 }
