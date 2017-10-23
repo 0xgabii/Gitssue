@@ -1,6 +1,13 @@
+#wrapper_canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+}
+
 #vGitssue {
   position: fixed;  
-  z-index: 9999;
+  z-index: 100000;
   
   background-color: #24292e;
   border-radius: 100%;
