@@ -3,6 +3,7 @@ import 'cropperjs/dist/cropper.min.css';
 
 export default class Capture {
   constructor(type = 'visible') {
+    this.wrapperId = 'wrapper_canvas';
     this.canvasId = 'display_capture';
     this.canvas = undefined;
     this.cropper = undefined;
@@ -27,6 +28,17 @@ export default class Capture {
     this.canvas = canvas;
   }
 
+  injectCanvas() {
+    const div = document.createElement('div');
+    div.id = this.wrapperId;
+    div.appendChild(this.canvas);
+    document.body.appendChild(div);
+  }
+
+  destroyCanvas() {
+    document.body.removeChild(document.getElementById(this.wrapperId));
+  }
+
   setButtonDisplay(visible) {
     document.getElementById('vGitssue').style.display = visible ? 'block' : 'none';
   }
@@ -43,15 +55,20 @@ export default class Capture {
       if (firstTime) {
         if (this.isFullCapture) {
           elm.scrollTop = 0;
+
+          this.canvas.height = scrollHeight;
+        } else {
+          this.canvas.height = clientHeight;
         }
 
         this.canvas.width = clientWidth;
-        this.canvas.height = scrollHeight;
       } else {
         elm.scrollTop = scrollTop + clientHeight;
       }
 
-      port.postMessage();
+      setTimeout(() => {
+        port.postMessage();
+      }, 150);
     };
 
     captureScreen(true);
@@ -60,14 +77,20 @@ export default class Capture {
       const img = new Image();
       img.src = dataURL;
       img.onload = () => {
-        this.canvas.getContext('2d').drawImage(img, 0, elm.scrollTop);
+        this.canvas.getContext('2d').drawImage(img, 0, this.isFullCapture ? elm.scrollTop : 0);
 
         if (elm.scrollHeight > elm.scrollTop + clientHeight && this.isFullCapture) {
           captureScreen();
         } else {
-          document.body.appendChild(this.canvas);
+          this.injectCanvas();
           this.initCrop();
           this.setButtonDisplay(true);
+
+          if (this.isFullCapture) {
+            elm.scrollTop = 0;
+          }
+          // eslint-disable-next-line
+          document.getElementById(this.wrapperId).style.top = this.isFullCapture ? 0 : `${elm.scrollTop}px`;
         }
       };
     });
