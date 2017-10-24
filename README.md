@@ -14,8 +14,8 @@ Manage your github issue by chrome extension
     - ctrl + z, ctrl + y for undo/redo
     - autosave
     - line number support?
-    - Screenshot
+    - Capture
       - ~~visible part & full-page~~
       - ~~select & crop~~
       - ~~upload google drive & get response~~
-      - remove screenshot blurry (because of canvas bug?)
+      - ~~text/image blurry (because of canvas bug?)~~

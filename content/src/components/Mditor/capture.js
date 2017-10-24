@@ -103,9 +103,32 @@ export default class Capture {
   }
 
   crop() {
-    const dataURL = this.cropper.getCroppedCanvas().toDataURL();
+    const dataURL = this.cropper.getCroppedCanvas({
+      imageSmoothingEnabled: false,
+    }).toDataURL();
 
     return this.uploadGDrive(dataURL);
+
+    /*
+    const { left, top, width, height } = this.cropper.getCropBoxData();
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+
+    ctx.drawImage(
+      this.canvas,
+      left, top,
+      width, height,
+      0, 0,
+      width, height,
+    );
+
+    document.body.appendChild(canvas);
+    */
   }
 
   destroy() {
