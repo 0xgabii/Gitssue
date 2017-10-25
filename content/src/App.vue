@@ -18,8 +18,6 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import firebase from './helpers/firebase';
-
 import CotentsView from './components/CotentsView';
 
 export default {
@@ -41,9 +39,8 @@ export default {
     ]),
   },
   created() {
-    firebase.auth().onAuthStateChanged((user) => {
-      this.authentication(user);
-    });
+    const port = chrome.runtime.connect({ name: 'auth' });
+    port.postMessage();
   },
   components: {
     CotentsView,

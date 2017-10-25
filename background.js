@@ -1,3 +1,35 @@
+function oauth(port) {
+  const REDIRECT_URI = chrome.identity.getRedirectURL('oauth2');
+  const CLIENT_ID = 'ecdb7ce9b19c87658e1b';
+  const AUTH_URL = `https://github.com/login/oauth/authorize/?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
+
+  const chromeAuth = {
+    url: AUTH_URL,
+    interactive: true,
+  };
+
+  chrome.identity.launchWebAuthFlow(chromeAuth, (code) => {
+    /* const xhr = new XMLHttpRequest;
+    xhr.open('get', 'https://api.github.com/user/issues');
+    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
+    xhr.send({
+      access_token: this.user.access_token,
+    }); */
+
+    const xhr = new XMLHttpRequest;
+    xhr.open('post', `https://github.com/login/oauth/access_token?
+                        code=${code.split('=')[1]}
+                        &client_id=${CLIENT_ID}
+                        &client_secret=e543b207ffc23254aa3b3a499d6b577447c8a21f`);
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        console.log(xhr.responseText);
+      }
+    };
+    xhr.send();    
+  });
+}
+
 function capture(port) {
   chrome.tabs.captureVisibleTab(
     null,
@@ -66,7 +98,9 @@ function saveToGoogleDrive(port, dataURL) {
 chrome.runtime.onConnect.addListener(function(port) {
   if (port.name === 'capture') {
     port.onMessage.addListener(() => capture(port));
+  } else if (port.name === 'auth') {
+    port.onMessage.addListener(() => oauth(port));
   } else {
-    port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));
+    port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));    
   }
 });
