@@ -103,13 +103,6 @@ export default class Capture {
   }
 
   crop() {
-    const dataURL = this.cropper.getCroppedCanvas({
-      imageSmoothingEnabled: false,
-    }).toDataURL();
-
-    return this.uploadGDrive(dataURL);
-
-    /*
     const { left, top, width, height } = this.cropper.getCropBoxData();
 
     const canvas = document.createElement('canvas');
@@ -127,8 +120,7 @@ export default class Capture {
       width, height,
     );
 
-    document.body.appendChild(canvas);
-    */
+    return this.uploadGDrive(canvas.toDataURL());
   }
 
   destroy() {
