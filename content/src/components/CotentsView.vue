@@ -24,6 +24,8 @@
       <button @click="requestRepos">requestRepos</button>
       <button @click="requestIssues">requestIssues</button>
 
+      <mditor />
+
       <repo-list :data="repos" />
       <issue-list :data="issues" />
     </div>
@@ -36,13 +38,10 @@ import axios from 'axios';
 
 import { mapState, mapActions } from 'vuex';
 
-import firebase from '../helpers/firebase';
-
 import RepoList from './Repos';
 import IssueList from './Issues';
 
-const provider = new firebase.auth.GithubAuthProvider();
-provider.addScope('repo');
+import Mditor from './Mditor';
 
 export default {
   name: 'ContentsView',
@@ -53,12 +52,16 @@ export default {
   computed: {
     ...mapState('auth', [
       'auth',
-      'user',
+      'token',
     ]),
   },
   methods: {
     ...mapActions('ui', [
       'changeUI',
+    ]),
+    ...mapActions('auth', [
+      'signIn',
+      'signOut',
     ]),
     requestGithub({
       url,
@@ -75,7 +78,7 @@ export default {
         },
         params: {
           ...params,
-          access_token: this.user.access_token,
+          access_token: this.token,
         },
         data,
       });
@@ -100,29 +103,11 @@ export default {
         this.issues = data;
       });
     },
-
-    signIn() {
-      firebase.auth().signInWithPopup(provider).then(({ additionalUserInfo, credential, user }) => {
-        const { avatar_url, html_url, login, name } = additionalUserInfo.profile;
-
-        firebase.database().ref(`users/${user.uid}`).set({
-          name,
-          nickname: login,
-          picture: avatar_url,
-          url: html_url,
-          access_token: credential.accessToken,
-        });
-      }).catch((error) => {
-        console.log(error);
-      });
-    },
-    signOut() {
-      firebase.auth().signOut();
-    },
   },
   components: {
     RepoList,
     IssueList,
+    Mditor,
   },
 };
 </script>

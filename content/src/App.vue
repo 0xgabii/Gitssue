@@ -39,8 +39,7 @@ export default {
     ]),
   },
   created() {
-    const port = chrome.runtime.connect({ name: 'auth' });
-    port.postMessage();
+    this.authentication();
   },
   components: {
     CotentsView,

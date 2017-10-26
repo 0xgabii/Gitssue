@@ -1,33 +1,60 @@
-import firebase from '../../helpers/firebase';
-
-const database = firebase.database();
+const port = chrome.runtime.connect({ name: 'auth' });
+const storage = chrome.storage;
 
 export default {
   namespaced: true,
   state: {
     auth: false,
 
-    user: {},
+    token: undefined,
   },
   mutations: {
-    SIGN_IN(state, user) {
+    AUTH_SUCCEED(state, token) {
       state.auth = true;
-      state.user = user;
+      state.token = token;
     },
-    SIGN_OUT(state) {
+    AUTH_FAILED(state) {
       state.auth = false;
-      state.user = {};
+      state.token = undefined;
     },
   },
   actions: {
-    authentication({ commit }, user) {
-      if (user) {
-        database.ref(`users/${user.uid}`).once('value').then((snapshot) => {
-          commit('SIGN_IN', snapshot.val());
-        });
-      } else {
-        commit('SIGN_OUT');
-      }
+    authentication({ commit, dispatch }) {
+      storage.sync.get('token', (results) => {
+        const token = results.token;
+
+        if (token) {
+          commit('AUTH_SUCCEED', token);
+        } else {
+          commit('AUTH_FAILED');
+        }
+        console.log('get', token);
+        // start observing token in storage
+        dispatch('observeAuth');
+      });
+    },
+    observeAuth({ commit }) {
+      storage.onChanged.addListener((changes) => {
+        const token = changes.token.newValue;
+
+        if (token) {
+          commit('AUTH_SUCCEED', token);
+        } else {
+          commit('AUTH_FAILED');
+        }
+
+        console.log('changes', changes);
+      });
+    },
+
+    signIn() {
+      port.postMessage();
+      port.onMessage.addListener((access_token) => {
+        storage.sync.set({ token: access_token });
+      });
+    },
+    signOut() {
+      storage.sync.set({ token: null });
     },
   },
 };

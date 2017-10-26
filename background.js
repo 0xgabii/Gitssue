@@ -1,29 +1,24 @@
 function oauth(port) {
   const REDIRECT_URI = chrome.identity.getRedirectURL('oauth2');
   const CLIENT_ID = 'ecdb7ce9b19c87658e1b';
-  const AUTH_URL = `https://github.com/login/oauth/authorize/?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}`;
+  const AUTH_URL = `https://github.com/login/oauth/authorize/?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=repo`;
 
   const chromeAuth = {
     url: AUTH_URL,
     interactive: true,
   };
 
-  chrome.identity.launchWebAuthFlow(chromeAuth, (code) => {
-    /* const xhr = new XMLHttpRequest;
-    xhr.open('get', 'https://api.github.com/user/issues');
-    xhr.setRequestHeader('Accept', 'application/vnd.github.v3+json');
-    xhr.send({
-      access_token: this.user.access_token,
-    }); */
+  chrome.identity.launchWebAuthFlow(chromeAuth, (uri) => {
+    const code = new URL(uri).searchParams.get('code');
+    const CLIENT_SECRET = 'e543b207ffc23254aa3b3a499d6b577447c8a21f';
 
     const xhr = new XMLHttpRequest;
-    xhr.open('post', `https://github.com/login/oauth/access_token?
-                        code=${code.split('=')[1]}
-                        &client_id=${CLIENT_ID}
-                        &client_secret=e543b207ffc23254aa3b3a499d6b577447c8a21f`);
+    xhr.open('post', `https://github.com/login/oauth/access_token?code=${code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`);
     xhr.onreadystatechange = function () {
       if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-        console.log(xhr.responseText);
+        const access_token = xhr.responseText.split('access_token=')[1].split('&')[0];
+
+        port.postMessage(access_token);
       }
     };
     xhr.send();    
