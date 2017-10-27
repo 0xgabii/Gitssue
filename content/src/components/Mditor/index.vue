@@ -1,6 +1,10 @@
 <template>
   <div class="mditor">
 
+    <div class="mditor-header">
+      <input type="text" v-model="title" placeholder="Title">
+    </div>
+
     <div class="mditor-controls">
       <div class="mditor-controls__tab">
         <span
@@ -12,11 +16,16 @@
         </span>
       </div>
 
-      <div class="mditor-controls__utils">
-        <span @click="startCapture('full')">full-page</span>
-        <span @click="startCapture('visible')">visible-part</span>
+      <div class="mditor-controls__utils" v-if="mode === tabs[0]">
+        <template v-if="capture.active">
+          <span @click="cropCapture">Select & crop</span>
+          <span @click="cancelCaptue">Cancel</span>
+        </template>
 
-        <span @click="cropCapture">crop</span>          
+        <template v-else>
+          <span @click="startCapture('full')">Full page</span>
+          <span @click="startCapture('visible')">Visible page</span>
+        </template>
       </div>
     </div>
 
@@ -24,8 +33,10 @@
       class="mditor-writeBox"
       v-if="mode === 'write'">
       <textarea 
-        v-model="texts"
+        v-model="contents"
         ref='textarea'
+        placeholder="Write your content"
+        spellcheck="false"
         @input="autoHeight($event.target)"
         @keydown.tab.prevent="indentText"
       />
@@ -36,6 +47,10 @@
       v-else
       v-html="parsedText"
     />
+
+    <div class="mditor-footer">
+      submit
+    </div>
     
   </div>
 </template>
@@ -54,22 +69,20 @@ marked.setOptions({
 export default {
   name: 'Mditor',
   data: () => ({
+    title: '',
+    contents: '',
+
     tabs: ['write', 'preview'],
-
     mode: 'write',
-
-    texts: '',
 
     capture: {
       active: false,
-      loading: false,
       v: undefined,
-      result: undefined,
     },
   }),
   computed: {
     parsedText() {
-      return marked(this.texts);
+      return marked(this.contents) || 'Type contents first!';
     },
   },
   watch: {
@@ -89,14 +102,25 @@ export default {
 
     startCapture(type) {
       const capture = new Capture(type);
-      capture.init();
+      // capture.init();
 
-      this.capture.v = capture;
+      this.capture = {
+        active: true,
+        v: capture,
+      };
     },
     cropCapture() {
       this.capture.v.crop().then((imgURL) => {
-        this.texts = `![](${imgURL})\n${this.texts}`;
+        this.contents = `![](${imgURL})\n${this.contents}`;
       });
+    },
+    cancelCaptue() {
+      // this.capture.v.destroy();
+
+      this.capture = {
+        active: false,
+        v: undefined,
+      };
     },
 
     indentText(e) {

@@ -4,7 +4,7 @@ $color_4: #2980b9;
 
 p {
 	margin-bottom: 10px;  
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.5;
 	color: $color_1;
 }
@@ -14,32 +14,28 @@ h1, h2, h3, h4 {
 	margin-bottom: 16px;
   padding-bottom: 5px;
 	line-height: 1.25;
+  font-weight: 600;	
 	border-bottom: 1px solid #eaecef;
 }
 
 h1 {
-	font-size: 32px;
-  font-weight: 600;
+	font-size: 28px;
 }
 
 h2 {
 	font-size: 24px;
-  font-weight: 600;
 }
 
 h3 {
 	font-size: 20px;
-  font-weight: 600;
 }
 
 h4 {
 	font-size: 16px;
-  font-weight: 600;
 }
 
 h5 {
 	font-size: 14px;
-  font-weight: 600;
 }
 
 h6 {
