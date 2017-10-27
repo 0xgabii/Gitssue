@@ -16,12 +16,7 @@
         "https://*/*"
       ],
       "js": [
-        "./content/dist/static/js/manifest.js",
-        "./content/dist/static/js/vendor_encoded.js",
-        "./content/dist/static/js/app.js"      
-      ],
-      "css": [
-        "./content/dist/static/css/app.css"
+        "dev.js"      
       ]
     }
   ],
@@ -39,7 +34,7 @@
     "scopes": []
   },
 
-  "content_security_policy": "font-src assets-cdn.github.com",
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   
   "permissions": [
     "<all_urls>",

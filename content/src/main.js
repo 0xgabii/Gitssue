@@ -10,11 +10,9 @@ import utils from './helpers/utils';
 
 Vue.config.productionTip = false;
 
-if (process.env.NODE_ENV === 'production') {
-  const app = document.createElement('div');
-  app.id = 'vGitssue';
-  document.body.appendChild(app);
-}
+const app = document.createElement('div');
+app.id = 'vGitssue';
+document.body.appendChild(app);
 
 utils.loadExternalCss([
   'https://fonts.googleapis.com/css?family=Roboto',
