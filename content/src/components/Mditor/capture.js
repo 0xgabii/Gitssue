@@ -35,10 +35,6 @@ export default class Capture {
     document.body.appendChild(div);
   }
 
-  destroyCanvas() {
-    document.body.removeChild(document.getElementById(this.wrapperId));
-  }
-
   setButtonDisplay(visible) {
     document.getElementById('vGitssue').style.display = visible ? 'block' : 'none';
   }
@@ -125,7 +121,7 @@ export default class Capture {
 
   destroy() {
     this.cropper.destroy();
-    document.body.removeChild(this.canvas);
+    document.body.removeChild(document.getElementById(this.wrapperId));
   }
 
   uploadGDrive(dataURL) {
