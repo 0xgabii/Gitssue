@@ -1,4 +1,3 @@
-const port = chrome.runtime.connect({ name: 'auth' });
 const storage = chrome.storage;
 
 export default {
@@ -28,7 +27,6 @@ export default {
         } else {
           commit('AUTH_FAILED');
         }
-        console.log('get', token);
         // start observing token in storage
         dispatch('observeAuth');
       });
@@ -42,12 +40,11 @@ export default {
         } else {
           commit('AUTH_FAILED');
         }
-
-        console.log('changes', changes);
       });
     },
 
     signIn() {
+      const port = chrome.runtime.connect({ name: 'auth' });
       port.postMessage();
       port.onMessage.addListener((access_token) => {
         storage.sync.set({ token: access_token });
