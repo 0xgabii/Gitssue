@@ -1,7 +1,7 @@
 <template>
   <div class="contentsView">
 
-    <div class="contentsView__header">
+    <div class="contentsView-header">
       <h3>Gitssue</h3>
       <div class="contentsView-controls">
         <i class="ion-ios-settings" />
@@ -9,9 +9,9 @@
       </div>
     </div>
     
-    <div class="contentsView__body">
+    <div class="contentsView-body">
 
-      <template v-if="auth">
+<!--       <template v-if="auth">
         successfully sign in
         <button @click="signOut">Sign out</button>
       </template>
@@ -20,39 +20,56 @@
         you have to login github for viewing repos & issue
         <button @click="signIn">Sign In</button>
       </div>
+       -->
+      <component :is="page" />
 
-      <button @click="requestRepos">requestRepos</button>
-      <button @click="requestIssues">requestIssues</button>
-
-      <mditor />
-
-      <repo-list :data="repos" />
-      <issue-list :data="issues" />
     </div>
+
+    <ul class="contentsView-footer">
+      <li 
+        v-for="tab in tabs"
+        :key="tab.name"
+        :class="{ active: page === tab.name }"
+        @click="switchPage(tab.name)">
+        <i :class="page === tab.name ? tab.activeIcon : tab.icon" />
+        {{ tab.name }}
+      </li>
+    </ul>
 
   </div>
 </template>
 
 <script>
-import axios from 'axios';
-
 import { mapState, mapActions } from 'vuex';
 
-import RepoList from './Repos';
-import IssueList from './Issues';
-
-import Mditor from './Mditor';
+import Repositories from './Pages/Repos';
 
 export default {
   name: 'ContentsView',
   data: () => ({
-    repos: undefined,
-    issues: undefined,
+    page: 'repositories',
+
+    tabs: [
+      {
+        icon: 'ion-ios-box-outline',
+        activeIcon: 'ion-ios-box',
+        name: 'repositories',
+      },
+      {
+        icon: 'ion-ios-compose-outline',
+        activeIcon: 'ion-ios-compose',
+        name: 'issues',
+      },
+      {
+        icon: 'ion-ios-box-outline',
+        activeIcon: 'ion-ios-box',
+        name: 'timeline',
+      },
+    ],
   }),
   computed: {
     ...mapState('auth', [
       'auth',
-      'token',
     ]),
   },
   methods: {
@@ -63,51 +80,12 @@ export default {
       'signIn',
       'signOut',
     ]),
-    requestGithub({
-      url,
-      method = 'get',
-      params,
-      data,
-    }) {
-      axios.request({
-        baseURL: 'https://api.github.com/',
-        url,
-        method,
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-        },
-        params: {
-          ...params,
-          access_token: this.token,
-        },
-        data,
-      });
-    },
-    requestRepos() {
-      this.requestGithub({
-        url: 'user/repos',
-        params: {
-          type: 'all',
-          sort: 'pushed',
-        },
-      }).then(({ data }) => {
-        this.repos = data;
-      });
-    },
-    requestIssues() {
-      this.requestGithub({
-        url: 'user/issues',
-        params: {
-        },
-      }).then(({ data }) => {
-        this.issues = data;
-      });
+    switchPage(anotherPage) {
+      this.page = anotherPage;
     },
   },
   components: {
-    RepoList,
-    IssueList,
-    Mditor,
+    Repositories,
   },
 };
 </script>
