@@ -43,7 +43,7 @@
     </div>
 
     <div 
-      class="mditor-previewBox" 
+      class="mditor-previewBox markdown-preview" 
       v-else
       v-html="parsedText"
     />
