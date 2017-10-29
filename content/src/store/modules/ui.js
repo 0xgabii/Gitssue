@@ -15,7 +15,7 @@ export default {
 
     resize: {
       width: 500,
-      height: 400,
+      height: 600,
     },
   },
   getters: {
@@ -29,7 +29,7 @@ export default {
         return {
           ...positionStyle,
           width: `${resize.width}px`,
-          minHeight: `${resize.height}px`,
+          height: `${resize.height}px`,
         };
       }
 
