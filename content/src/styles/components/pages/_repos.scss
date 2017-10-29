@@ -1,0 +1,75 @@
+.reposPage {
+  padding: 0 15px;
+
+  .reposList {
+
+    &-repo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  
+      padding: 15px 0;
+      border-bottom: 1px solid $gray;
+  
+      &:last-of-type {
+        border: none;
+      }
+  
+       &__info {
+  
+        h3 {
+          margin: 5px 0;
+          font-size: 17px;          
+        }
+  
+        a {
+          color: $blue;
+          text-decoration: none;
+        }
+  
+        p {
+          font-size: 13px;
+        }
+      }
+  
+      &__issue {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        font-size: 13px;
+        cursor: pointer;
+
+        &.disabled {
+          color: $gray;
+          pointer-events: none;
+
+          label {
+            border-color: $gray;
+            color: $gray;
+          }
+        }
+
+        label {
+          margin-bottom: 3px;
+          position: relative;
+          width: 30px;
+          height: 30px;
+          background-color: white;    
+          color: $blue;
+          cursor: pointer;
+          border: 2px solid $blue; 
+        }
+  
+        span {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          font-size: 15px;
+          font-weight: bold;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+  }
+}
