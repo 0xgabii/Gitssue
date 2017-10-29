@@ -10,18 +10,18 @@
     </div>
     
     <div class="contentsView-body">
-
-<!--       <template v-if="auth">
-        successfully sign in
-        <button @click="signOut">Sign out</button>
-      </template>
+      
+      <component
+        v-if="auth" 
+        :is="page.component" 
+        v-bind="page.props"
+        @move-page="handleMovePage"
+      />
 
       <div v-else>
         you have to login github for viewing repos & issue
         <button @click="signIn">Sign In</button>
       </div>
-       -->
-      <component :is="page" />
 
     </div>
 
@@ -29,9 +29,9 @@
       <li 
         v-for="tab in tabs"
         :key="tab.name"
-        :class="{ active: page === tab.name }"
-        @click="switchPage(tab.name)">
-        <i :class="page === tab.name ? tab.activeIcon : tab.icon" />
+        :class="{ active: tab.name === page.component }"
+        @click="handleMovePage({ component: tab.name })">
+        <i :class="tab.name === page.component ? tab.activeIcon : tab.icon" />
         {{ tab.name }}
       </li>
     </ul>
@@ -43,11 +43,16 @@
 import { mapState, mapActions } from 'vuex';
 
 import Repositories from './Pages/Repos';
+import Issues from './Pages/Issues';
+import Issue from './Pages/Issue';
 
 export default {
   name: 'ContentsView',
   data: () => ({
-    page: 'repositories',
+    page: {
+      component: 'repositories',
+      props: {},
+    },
 
     tabs: [
       {
@@ -80,12 +85,17 @@ export default {
       'signIn',
       'signOut',
     ]),
-    switchPage(anotherPage) {
-      this.page = anotherPage;
+    handleMovePage({ component, props = {} }) {
+      this.page = {
+        component,
+        props,
+      };
     },
   },
   components: {
     Repositories,
+    Issues,
+    Issue,
   },
 };
 </script>
