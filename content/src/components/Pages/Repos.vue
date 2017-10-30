@@ -4,21 +4,17 @@
       <li
         v-for="item in extractList"
         class="reposList-repo"
-        :key="item.id">
+        :key="item.id"
+        @click="requestIssues(item.url)">
 
         <div class="reposList-repo__info">
-          <h3>
-            <a target="__blank" :href="item.html_url">
-              {{item.name}}
-            </a>
-          </h3>
+          <h3>{{item.name}}</h3>
           <p>{{item.description}}</p>
         </div>
 
         <div
           class="reposList-repo__issue"
-          :class="{disabled: !item.issues_count}"
-          @click="requestIssues(item.url)">
+          :class="{disabled: !item.issues_count}">
           <label>
             <span>{{item.issues_count}}</span>
           </label>
@@ -50,7 +46,6 @@ export default {
         name,
         full_name,
         description,
-        html_url,
         url,
         permissions,
         open_issues_count,
@@ -58,7 +53,6 @@ export default {
         id,
         name: permissions.admin ? name : full_name,
         description,
-        html_url,
         url,
         issues_count: open_issues_count,
       }));

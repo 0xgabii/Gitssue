@@ -19,14 +19,11 @@
   
         h3 {
           margin: 5px 0;
-          font-size: 17px;          
-        }
-  
-        a {
+          font-size: 17px;       
           color: $blue;
-          text-decoration: none;
+          cursor: pointer;
         }
-  
+
         p {
           font-size: 13px;
         }
@@ -38,11 +35,9 @@
         align-items: center;
 
         font-size: 13px;
-        cursor: pointer;
 
         &.disabled {
           color: $gray;
-          pointer-events: none;
 
           label {
             border-color: $gray;
@@ -57,7 +52,6 @@
           height: 30px;
           background-color: white;    
           color: $blue;
-          cursor: pointer;
           border: 2px solid $blue; 
         }
   
@@ -67,7 +61,7 @@
           top: 50%;
           font-size: 15px;
           font-weight: bold;
-          transform: translate(-50%, -50%);
+          transform: translate(-50%, -45%);
         }
       }
     }
