@@ -49,7 +49,7 @@
     />
 
     <div class="mditor-footer">
-      submit
+      <button @click="handleSubmit">{{submitText}}</button>
     </div>
     
   </div>
@@ -68,6 +68,12 @@ marked.setOptions({
 
 export default {
   name: 'Mditor',
+  props: {
+    submitText: {
+      type: String,
+      default: 'Submit',
+    },
+  },
   data: () => ({
     title: '',
     contents: '',
@@ -95,6 +101,13 @@ export default {
     },
   },
   methods: {
+    handleSubmit() {
+      this.$emit('submit', {
+        title: this.title,
+        contents: this.contents,
+      });
+    },
+
     autoHeight(target) {
       target.style.height = 'auto';
       target.style.height = `${target.scrollHeight}px`;
@@ -102,7 +115,7 @@ export default {
 
     startCapture(type) {
       const capture = new Capture(type);
-      // capture.init();
+      capture.init();
 
       this.capture = {
         active: true,
@@ -115,7 +128,7 @@ export default {
       });
     },
     cancelCaptue() {
-      // this.capture.v.destroy();
+      this.capture.v.destroy();
 
       this.capture = {
         active: false,
