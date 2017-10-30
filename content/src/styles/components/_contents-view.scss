@@ -51,7 +51,7 @@
       flex: 1;
 
       position: relative;
-      padding: 35px 10px 7px 10px;
+      padding: 37px 10px 7px 10px;
       color: gray;
       font-size: 12px;
       text-align: center;
@@ -65,8 +65,8 @@
       i {
         position: absolute;
         left: 50%;
-        top: 0;
-        font-size: 35px;
+        top: 5px;
+        font-size: 30px;
         transform: translateX(-50%);
       }
     }
