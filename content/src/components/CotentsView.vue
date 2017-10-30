@@ -28,10 +28,10 @@
     <ul class="contentsView-footer">
       <li 
         v-for="tab in tabs"
-        :key="tab.name"
-        :class="{ active: tab.name === page.component }"
-        @click="handleMovePage({ component: tab.name })">
-        <i :class="tab.name === page.component ? tab.activeIcon : tab.icon" />
+        :key="tab.component"
+        :class="{ active: tab.component === page.component }"
+        @click="handleMovePage({ component: tab.component })">
+        <i :class="tab.component === page.component ? tab.icon : `${tab.icon}-outline`" />
         {{ tab.name }}
       </li>
     </ul>
@@ -42,9 +42,13 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 
+import Home from './Pages/Home';
 import Repositories from './Pages/Repos';
 import Issues from './Pages/Issues';
 import Issue from './Pages/Issue';
+import NewIssue from './Pages/NewIssue';
+import Notification from './Pages/Notification';
+import Settings from './Pages/Settings';
 
 export default {
   name: 'ContentsView',
@@ -56,19 +60,29 @@ export default {
 
     tabs: [
       {
-        icon: 'ion-ios-box-outline',
-        activeIcon: 'ion-ios-box',
+        icon: 'ion-ios-home',
+        name: 'home',
+        component: 'home',
+      },
+      {
+        icon: 'ion-ios-box',
         name: 'repositories',
+        component: 'repositories',
       },
       {
-        icon: 'ion-ios-compose-outline',
-        activeIcon: 'ion-ios-compose',
-        name: 'issues',
+        icon: 'ion-ios-compose',
+        name: 'new issue',
+        component: 'new-issue',
       },
       {
-        icon: 'ion-ios-box-outline',
-        activeIcon: 'ion-ios-box',
-        name: 'timeline',
+        icon: 'ion-ios-paperplane',
+        name: 'notification',
+        component: 'notification',
+      },
+      {
+        icon: 'ion-ios-gear',
+        name: 'settings',
+        component: 'settings',
       },
     ],
   }),
@@ -93,9 +107,13 @@ export default {
     },
   },
   components: {
+    Home,
     Repositories,
     Issues,
     Issue,
+    NewIssue,
+    Notification,
+    Settings,
   },
 };
 </script>
