@@ -4,12 +4,14 @@
     <div class="markdown-preview" v-html="extractIssue.body">
       
     </div>
-    
+
+    <relative-time :utc="extractIssue.time" />
+
     <div>
       
       <ul>
         <li 
-          v-for="comment in comments"
+          v-for="comment in extractComments"
           :key="comment.id"
           class="markdown-preview"
           v-html="comment.body">
@@ -25,6 +27,8 @@ import marked from 'marked';
 import hljs from 'highlight.js';
 
 import { mapState } from 'vuex';
+
+import RelativeTime from '../Common/RelativeTime';
 
 import utils from '../../helpers/utils';
 
@@ -59,21 +63,42 @@ export default {
         title,
         body,
         user,
+        author_association,
         created_at,
+        closed_at,
       } = this.issue;
 
       return {
         id,
         labels: labels.map(({ name, color }) => ({ name, color: `#${color}` })),
-        state,
         title,
         body: marked(body),
         author: {
           profile: user.avatar_url,
           name: user.login,
+          association: author_association,
         },
-        created_at, // https://github.com/github/time-elements
+        state: state === 'open' ? 'opened' : 'closed',
+        time: state === 'open' ? created_at : closed_at,
       };
+    },
+    extractComments() {
+      return this.comments.map(({
+        id,
+        body,
+        author_association,
+        user,
+        created_at,
+      }) => ({
+        id,
+        body: marked(body),
+        author: {
+          profile: user.avatar_url,
+          name: user.login,
+          association: author_association,
+        },
+        time: created_at,
+      }));
     },
   },
   methods: {
@@ -96,11 +121,24 @@ export default {
       }).then((data) => {
         this.comments = data;
       });
+
+      utils.requestGithub({
+        url: `${this.url}/timeline`,
+        headers: {
+          Accept: 'application/vnd.github.mockingbird-preview',
+        },
+        params: {
+          access_token: this.token,
+        },
+      });
     },
   },
   created() {
     this.requestIssue();
     this.requestComments();
+  },
+  components: {
+    RelativeTime,
   },
 };
 </script>

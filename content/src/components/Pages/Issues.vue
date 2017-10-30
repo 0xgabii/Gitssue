@@ -10,14 +10,21 @@
         @click="requestIssue(item.url)">
 
         <div class="issuesList-issue__info">
-          <h3>{{item.title}}</h3>
+          <span 
+            v-for="label in item.labels" 
+            :key="label.name"
+            :style="{ backgroundColor: label.color }">
+            {{label.name}}
+          </span>
+
+          <h3>
+            {{item.title}}
+          </h3>
+
           <p>
-            <span 
-              v-for="label in item.labels" 
-              :key="label.name"
-              :style="{ backgroundColor: label.color }">
-              {{label.name}}
-            </span>
+            {{item.state}}
+            <relative-time :utc="item.time" />            
+            by {{item.author}}
           </p>
         </div>
 
@@ -35,6 +42,8 @@
 
 <script>
 import { mapState } from 'vuex';
+
+import RelativeTime from '../Common/RelativeTime';
 
 import utils from '../../helpers/utils';
 
@@ -58,16 +67,23 @@ export default {
 
       return this.list.map(({
         id,
+        state,
         title,
         url,
         labels,
         comments,
+        user,
+        created_at,
+        closed_at,
       }) => ({
         id,
         title,
         url,
         labels: labels.map(({ name, color }) => ({ name, color: `#${color}` })),
         comments_count: comments,
+        author: user.login,
+        state: state === 'open' ? 'opened' : 'closed',
+        time: state === 'open' ? created_at : closed_at,
       }));
     },
   },
@@ -92,6 +108,9 @@ export default {
   },
   created() {
     this.requestIssues();
+  },
+  components: {
+    RelativeTime,
   },
 };
 </script>
