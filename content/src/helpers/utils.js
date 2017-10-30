@@ -14,6 +14,9 @@ export default {
     baseURL,
     url,
     method = 'get',
+    headers = {
+      Accept: 'application/vnd.github.v3+json',
+    },
     params,
     data,
   }) {
@@ -22,9 +25,7 @@ export default {
         baseURL,
         url,
         method,
-        headers: {
-          Accept: 'application/vnd.github.v3+json',
-        },
+        headers,
         params,
         data,
       }).then(res => resolve(res.data))
