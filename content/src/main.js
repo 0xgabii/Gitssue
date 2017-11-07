@@ -6,6 +6,8 @@ import App from './App';
 
 import store from './store';
 
+import router from './router';
+
 Vue.config.productionTip = false;
 
 const app = document.createElement('div');
@@ -16,6 +18,7 @@ document.body.appendChild(app);
 new Vue({
   el: '#app',
   store,
+  router,
   template: '<App/>',
   components: { App },
 });

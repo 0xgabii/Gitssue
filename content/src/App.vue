@@ -18,7 +18,6 @@ import { mapGetters, mapState, mapActions } from 'vuex';
 import CotentsView from './components/CotentsView';
 
 const iframe = window.parent.document.getElementById('vGitssue');
-iframe.style.opacity = 1;
 
 export default {
   name: 'app',
