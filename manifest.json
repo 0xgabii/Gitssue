@@ -15,9 +15,8 @@
         "http://*/*",
         "https://*/*"
       ],
-      "js": [
-        "dev.js"      
-      ]
+      "css": ["dev.css"],
+      "js": ["dev.js"]
     }
   ],
 

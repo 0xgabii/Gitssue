@@ -30,6 +30,7 @@ export default {
           ...positionStyle,
           width: `${resize.width}px`,
           height: `${resize.height}px`,
+          borderRadius: 0,
         };
       }
 
@@ -37,6 +38,7 @@ export default {
         ...positionStyle,
         width: `${fixed.width}px`,
         height: `${fixed.height}px`,
+        borderRadius: '100%',
       };
     },
   },

@@ -6,22 +6,15 @@ import App from './App';
 
 import store from './store';
 
-import utils from './helpers/utils';
-
 Vue.config.productionTip = false;
 
 const app = document.createElement('div');
-app.id = 'vGitssue';
+app.id = 'app';
 document.body.appendChild(app);
-
-utils.loadExternalCss([
-  'https://fonts.googleapis.com/css?family=Roboto',
-  'https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css',
-]);
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#vGitssue',
+  el: '#app',
   store,
   template: '<App/>',
   components: { App },
