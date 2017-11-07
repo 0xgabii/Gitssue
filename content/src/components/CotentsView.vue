@@ -11,12 +11,7 @@
     
     <div class="contentsView-body">
       
-      <component
-        v-if="auth" 
-        :is="page.component" 
-        v-bind="page.props"
-        @move-page="handleMovePage"
-      />
+      <router-view v-if="auth" />
 
       <div v-else>
         you have to login github for viewing repos & issue
@@ -26,14 +21,13 @@
     </div>
 
     <ul class="contentsView-footer">
-      <li 
+      <router-link
         v-for="tab in tabs"
-        :key="tab.component"
-        :class="{ active: tab.component === page.component }"
-        @click="handleMovePage({ component: tab.component })">
-        <i :class="tab.component === page.component ? tab.icon : `${tab.icon}-outline`" />
+        tag="li"
+        :to="{ name: tab.route }">
+        <i :class="tab.route === $route.name ? tab.icon : `${tab.icon}-outline`" />
         {{ tab.name }}
-      </li>
+      </router-link>
     </ul>
 
   </div>
@@ -42,47 +36,34 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 
-import Home from './Pages/Home';
-import Repositories from './Pages/Repos';
-import Issues from './Pages/Issues';
-import Issue from './Pages/Issue';
-import NewIssue from './Pages/NewIssue';
-import Notification from './Pages/Notification';
-import Settings from './Pages/Settings';
-
 export default {
   name: 'ContentsView',
   data: () => ({
-    page: {
-      component: 'repositories',
-      props: {},
-    },
-
     tabs: [
       {
         icon: 'ion-ios-home',
         name: 'home',
-        component: 'home',
+        route: 'Home',
       },
       {
         icon: 'ion-ios-box',
         name: 'repositories',
-        component: 'repositories',
+        route: 'Repositories',
       },
       {
         icon: 'ion-ios-compose',
         name: 'new issue',
-        component: 'new-issue',
+        route: 'NewIssue',
       },
       {
         icon: 'ion-ios-paperplane',
         name: 'notification',
-        component: 'notification',
+        route: 'Notification',
       },
       {
         icon: 'ion-ios-gear',
         name: 'settings',
-        component: 'settings',
+        route: 'Settings',
       },
     ],
   }),
@@ -99,21 +80,6 @@ export default {
       'signIn',
       'signOut',
     ]),
-    handleMovePage({ component, props = {} }) {
-      this.page = {
-        component,
-        props,
-      };
-    },
-  },
-  components: {
-    Home,
-    Repositories,
-    Issues,
-    Issue,
-    NewIssue,
-    Notification,
-    Settings,
   },
 };
 </script>

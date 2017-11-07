@@ -58,7 +58,7 @@
       text-transform: capitalize;
       cursor: pointer;
 
-      &.active {
+      &.router-link-exact-active {
         color: $blue;
       }
       
