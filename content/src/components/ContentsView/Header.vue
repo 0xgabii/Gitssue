@@ -1,13 +1,25 @@
 <template>
   <div class="contentsView-header">
-    <h3>
-      <button @click="back">back</button>
-      <button @click="forward">forward</button>  
-      {{$route.fullPath}}
-    </h3>
-    <div class="contentsView-controls">
-      <i class="ion-ios-settings" />
-      <i class="ion-android-close" @click="changeUI({ category: 'extend', value: false })" />
+    
+    <div class="navigate">
+      <button
+        :class="{ disabled: !isBackAvailable }"
+        @click="back">
+        <i class="ion-ios-arrow-back" />
+      </button>
+      <button 
+        :class="{ disabled: !isForwardAbailable }"
+        @click="forward">
+        <i class="ion-ios-arrow-forward" />
+      </button>
+
+      <p class="navigate__location">{{$route.fullPath}}</p>
+    </div>
+    
+    <div class="controls">
+      <button @click="changeUI({ category: 'extend', value: false })">
+        <i class="ion-android-close" />
+      </button> 
     </div>
   </div>
 </template>
@@ -24,6 +36,22 @@ export default {
       useBtnForMove: false,
     },
   }),
+  computed: {
+    isBackAvailable() {
+      const { history, current } = this.router;
+
+      if (current === history.length - 1) return false;
+
+      return true;
+    },
+    isForwardAbailable() {
+      const { current } = this.router;
+
+      if (current === 0) return false;
+
+      return true;
+    },
+  },
   watch: {
     $route({ name, params, query }) {
       const route = {
@@ -31,7 +59,7 @@ export default {
         params,
         query,
       };
-
+      // Do not save history when use back or forward button
       if (this.router.useBtnForMove) {
         this.router = {
           ...this.router,
@@ -47,22 +75,14 @@ export default {
       'changeUI',
     ]),
     back() {
-      const { history, current } = this.router;
-
-      if (current === history.length - 1) return;
-
       this.router.current += 1;
       this.router.useBtnForMove = true;
-      this.$router.replace(history[this.router.current]);
+      this.$router.replace(this.router.history[this.router.current]);
     },
     forward() {
-      const { history, current } = this.router;
-
-      if (current === 0) return;
-
       this.router.current -= 1;
       this.router.useBtnForMove = true;
-      this.$router.replace(history[this.router.current]);
+      this.$router.replace(this.router.history[this.router.current]);
     },
   },
   created() {

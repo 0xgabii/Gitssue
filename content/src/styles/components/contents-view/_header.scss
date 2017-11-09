@@ -3,29 +3,48 @@
   justify-content: space-between;
   align-items: center;
 
+  padding: 0.3rem 0.5rem;
   background-color: #24292e;
   color: white;
-
+  user-select: none;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 
-  h3 {
-    padding: 10px 12px;
-    font-size: 15px;
+  .navigate {    
+    display: flex;
+    align-items: center;
+
+    &__location {
+      margin-left: 0.5rem;
+    }
   }
-}
 
-&-controls {
-  margin-right: 10px;
+  .controls {
+    //
+  }
 
-  i {
-    padding: 5px;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 20px;
+  button {
+    position: relative;
+    width: 1.5rem;
+    height: 2rem;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: white;
+    font-size: 1.25rem;
+    transition: all 0.2s;
 
-    transition: color 0.2s;
+    &.disabled {
+      color: hsl(0, 0%, 50%);
+      pointer-events: none;
+    }
 
-    &:hover {
-      color: white;
+    i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: 1.5rem;
+      transform: translate(-50%, -50%);
     }
   }
 }
