@@ -1,10 +1,10 @@
 <template>
   <div id="app" :class="{ extend }">
 
-    <cotents-view v-if="extend" />
+    <cotents-view v-show="extend" />
 
     <i
-      v-else
+      v-show="!extend"
       class="ion-social-github"
       @click="changeUI({ category: 'extend', value: true })"
     />
