@@ -1,0 +1,16 @@
+.loadingSpinner {
+  position: relative;
+  width: 100%;
+  min-height: 10rem;
+
+  .v-spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    div {
+      background-color: $blue !important;
+    }
+  }
+}
