@@ -15,7 +15,7 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import CotentsView from './components/CotentsView';
+import CotentsView from './components/ContentsView';
 
 const iframe = window.parent.document.getElementById('vGitssue');
 

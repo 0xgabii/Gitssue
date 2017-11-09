@@ -1,0 +1,10 @@
+.contentsView {
+  display: flex;
+  flex-direction: column;
+
+  height: inherit;
+
+  @import 'header';
+  @import 'body';
+  @import 'footer'; 
+}

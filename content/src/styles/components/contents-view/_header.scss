@@ -1,0 +1,31 @@
+&-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  background-color: #24292e;
+  color: white;
+
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+
+  h3 {
+    padding: 10px 12px;
+    font-size: 15px;
+  }
+}
+
+&-controls {
+  margin-right: 10px;
+
+  i {
+    padding: 5px;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 20px;
+
+    transition: color 0.2s;
+
+    &:hover {
+      color: white;
+    }
+  }
+}
