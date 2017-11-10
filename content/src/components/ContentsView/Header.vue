@@ -54,19 +54,23 @@ export default {
   },
   watch: {
     $route({ name, params, query }) {
+      const { history, current, useBtnForMove } = this.router;
       const route = {
         name,
         params,
         query,
       };
       // Do not save history when use back or forward button
-      if (this.router.useBtnForMove) {
+      if (useBtnForMove) {
         this.router = {
           ...this.router,
           useBtnForMove: false,
         };
       } else {
+        // Clear ahead of the current index history && Reset current index
+        this.router.history = history.filter((item, index) => index >= current && item);
         this.router.history.unshift(route);
+        this.router.current = 0;
       }
     },
   },
