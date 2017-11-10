@@ -2,14 +2,18 @@
   <div class="issuesPage">
     New issue
 
-    <ul class="issuesList">
-      <li
-        v-for="item in extractList"
-        class="issuesList-issue"
-        :key="item.id"
-        @click="requestIssue(item.url)">
+    <loading-spinner v-if="loading" />
 
-        <div class="issuesList-issue__info">
+    <ul v-else class="issuesList">
+      <router-link
+        v-for="item in extractList"
+        class="issue"
+        tag="li"
+        replace
+        :key="item.id"
+        :to="{ name: 'Issue', params: { issueId: item.number } }">
+
+        <div class="issue-info">
           <span 
             v-for="label in item.labels" 
             :key="label.name"
@@ -29,14 +33,15 @@
         </div>
 
         <div
-          class="issuesList-issue__comments"
-          :class="{ disabled: !item.comments_count}">
+          class="issue-comments"
+          :class="{'issue-comments--none': !item.comments_count}">
           <i class="ion-ios-chatboxes-outline"/>
           {{item.comments_count}}
         </div>
         
-      </li>
+      </router-link>
     </ul>
+
   </div>
 </template>
 
@@ -44,19 +49,15 @@
 import { mapState } from 'vuex';
 
 import RelativeTime from '../Common/RelativeTime';
+import LoadingSpinner from '../Common/LoadingSpinner';
 
 import utils from '../../helpers/utils';
 
 export default {
   name: 'IssuesPage',
-  props: {
-    url: {
-      type: String,
-      required: true,
-    },
-  },
   data: () => ({
     list: [],
+    loading: false,
   }),
   computed: {
     ...mapState('auth', [
@@ -69,7 +70,7 @@ export default {
         id,
         state,
         title,
-        url,
+        number,
         labels,
         comments,
         user,
@@ -78,7 +79,7 @@ export default {
       }) => ({
         id,
         title,
-        url,
+        number,
         labels: labels.map(({ name, color }) => ({ name, color: `#${color}` })),
         comments_count: comments,
         author: user.login,
@@ -89,14 +90,19 @@ export default {
   },
   methods: {
     requestIssues() {
+      const { owner, name } = this.$route.params;
+
+      this.loading = true;
+
       utils.requestGithub({
-        url: this.url,
+        url: `https://api.github.com/repos/${owner}/${name}/issues`,
         params: {
           access_token: this.token,
           filter: 'all',
         },
       }).then((data) => {
         this.list = data;
+        this.loading = false;
       });
     },
     requestIssue(url) {
@@ -111,6 +117,7 @@ export default {
   },
   components: {
     RelativeTime,
+    LoadingSpinner,
   },
 };
 </script>

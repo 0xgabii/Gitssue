@@ -1,24 +1,69 @@
 <template>
-  <div class="issuePage">
-    
-    <div class="markdown-preview" v-html="extractIssue.body">
-      
-    </div>
+  <div class="issue">
 
-    <relative-time :utc="extractIssue.time" />
+    <!-- main -->
+    <template>
 
-    <div>
-      
-      <ul>
-        <li 
-          v-for="comment in extractComments"
-          :key="comment.id"
-          class="markdown-preview"
-          v-html="comment.body">
-        </li>
-      </ul>
+      <loading-spinner v-if="loading.content" />
 
-    </div>
+      <template v-else>
+
+        <div class="issue-info">
+          {{extractIssue.title}}
+        </div>
+
+        <div class="main">
+          <div class="main-info">
+            <div>        
+              <img class="main-info__profile" :src="extractIssue.author.profile" />
+              <div class="main-info__author">
+                <p>{{extractIssue.author.name}}</p>
+                <span>created <relative-time :utc="extractIssue.time" /></span>
+              </div>          
+            </div>
+
+            <button>
+              <i class="ion-edit" />
+              edi
+            </button>
+          </div>
+
+          <div class="main__content markdown-preview" v-html="extractIssue.body" />
+        </div>
+
+      </template>
+
+    </template>
+
+    <!-- comments -->
+    <template>
+
+      <loading-spinner v-if="loading.comments" />
+
+      <div 
+        class="comment"
+        v-else
+        v-for="comment in extractComments"
+        :key="comment.id">
+        <div class="comment-info">
+          <div>        
+            <img class="comment-info__profile" :src="comment.author.profile" />
+            <div class="comment-info__author">
+              <p>{{comment.author.name}}</p>
+              <span>commented <relative-time :utc="comment.time" /></span>
+            </div>          
+          </div>
+
+          <button>
+            <i class="ion-edit" />
+            edit
+          </button>
+        </div>
+        <div class="comment__content markdown-preview" v-html="comment.body" />
+      </div>
+
+    </template>
+
   </div>
 </template>
 
@@ -29,6 +74,7 @@ import hljs from 'highlight.js';
 import { mapState } from 'vuex';
 
 import RelativeTime from '../Common/RelativeTime';
+import LoadingSpinner from '../Common/LoadingSpinner';
 
 import utils from '../../helpers/utils';
 
@@ -39,23 +85,19 @@ marked.setOptions({
 
 export default {
   name: 'IssuePage',
-  props: {
-    url: {
-      type: String,
-      required: true,
-    },
-  },
   data: () => ({
     issue: {},
     comments: [],
+    loading: {
+      content: false,
+      comments: false,
+    },
   }),
   computed: {
     ...mapState('auth', [
       'token',
     ]),
     extractIssue() {
-      if (!Object.keys(this.issue).length) return {};
-
       const {
         id,
         labels,
@@ -103,34 +145,44 @@ export default {
   },
   methods: {
     requestIssue() {
+      const { owner, name, issueId } = this.$route.params;
+
+      this.loading.content = true;
+
       utils.requestGithub({
-        url: this.url,
+        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}`,
         params: {
           access_token: this.token,
         },
       }).then((data) => {
         this.issue = data;
+        this.loading.content = false;
       });
     },
     requestComments() {
+      const { owner, name, issueId } = this.$route.params;
+
+      this.loading.content = true;
+
       utils.requestGithub({
-        url: `${this.url}/comments`,
+        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}/comments`,
         params: {
           access_token: this.token,
         },
       }).then((data) => {
         this.comments = data;
+        this.loading.content = false;
       });
 
-      utils.requestGithub({
-        url: `${this.url}/timeline`,
+      /* utils.requestGithub({
+        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}/timeline`,
         headers: {
           Accept: 'application/vnd.github.mockingbird-preview',
         },
         params: {
           access_token: this.token,
         },
-      });
+      }); */
     },
   },
   created() {
@@ -139,6 +191,7 @@ export default {
   },
   components: {
     RelativeTime,
+    LoadingSpinner,
   },
 };
 </script>

@@ -1,29 +1,33 @@
 <template>
-  <div class="reposPage">
+  <div class="reposPage" v-if="$route.name === 'Repos'">
     <ul class="reposList">
-      <li
+      <router-link
         v-for="item in extractList"
-        class="reposList-repo"
+        class="repo"
+        tag="li"
+        replace
         :key="item.id"
-        @click="requestIssues(item.url)">
+        :to="{ name: 'Issues', params: { owner: item.issues_route.owner, name: item.issues_route.name } }">
 
-        <div class="reposList-repo__info">
+        <div class="repo-info">
           <h3>{{item.name}}</h3>
           <p>{{item.description}}</p>
         </div>
 
         <div
-          class="reposList-repo__issue"
-          :class="{disabled: !item.issues_count}">
+          class="repo-issue"
+          :class="{'repo-issue--none': !item.issues_count}">
           <label>
             <span>{{item.issues_count}}</span>
           </label>
           open issues
         </div>
 
-      </li>
+      </router-link>
     </ul>
   </div>
+
+  <router-view v-else />  
 </template>
 
 <script>
@@ -48,6 +52,7 @@ export default {
         description,
         url,
         permissions,
+        owner,
         open_issues_count,
       }) => ({
         id,
@@ -55,6 +60,10 @@ export default {
         description,
         url,
         issues_count: open_issues_count,
+        issues_route: {
+          owner: owner.login,
+          name,
+        },
       }));
     },
   },
@@ -69,14 +78,6 @@ export default {
         },
       }).then((data) => {
         this.list = data;
-      });
-    },
-    requestIssues(url) {
-      this.$emit('move-page', {
-        component: 'issues',
-        props: {
-          url: `${url}/issues`,
-        },
       });
     },
   },
