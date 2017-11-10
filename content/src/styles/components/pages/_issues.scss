@@ -3,7 +3,7 @@
 
   .issuesList {
 
-    &-issue {
+    .issue {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -15,7 +15,7 @@
         border: none;
       }
 
-      &__info {
+      &-info {
 
         h3 {
           margin: 5px 0;
@@ -39,13 +39,13 @@
         }
       }
 
-      &__comments {
+      &-comments {
         margin-left: 10px;
         white-space: nowrap;
         text-align: center;
         font-size: 17px;
 
-        &.disabled {
+        &--none {
           color: $gray;
         }
 
