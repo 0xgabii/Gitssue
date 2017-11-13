@@ -157,6 +157,8 @@ export default {
       }).then((data) => {
         this.issue = data;
         this.loading.content = false;
+
+        this.requestComments();
       });
     },
     requestComments() {
@@ -187,7 +189,6 @@ export default {
   },
   created() {
     this.requestIssue();
-    this.requestComments();
   },
   components: {
     RelativeTime,
