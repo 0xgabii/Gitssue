@@ -23,4 +23,7 @@ export default {
       .catch(res => reject(res.error));
     });
   },
+  message(port, msg) {
+    window.parent.postMessage({ port, msg }, '*');
+  },
 };

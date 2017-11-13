@@ -1,4 +1,4 @@
-const storage = chrome.storage;
+import utils from '../../helpers/utils';
 
 export default {
   namespaced: true,
@@ -18,40 +18,27 @@ export default {
     },
   },
   actions: {
-    authentication({ commit, dispatch }) {
-      storage.sync.get('token', (results) => {
-        const token = results.token;
-
-        if (token) {
-          commit('AUTH_SUCCEED', token);
-        } else {
-          commit('AUTH_FAILED');
-        }
-        // start observing token in storage
-        dispatch('observeAuth');
-      });
+    authentication({ dispatch }) {
+      utils.message('auth', { type: 'init' });
+      dispatch('observeAuth');
     },
     observeAuth({ commit }) {
-      storage.onChanged.addListener((changes) => {
-        const token = changes.token.newValue;
-
-        if (token) {
-          commit('AUTH_SUCCEED', token);
-        } else {
-          commit('AUTH_FAILED');
+      window.addEventListener('message', ({ data: { port, msg } }) => {
+        if (port === 'auth') {
+          if (msg.token) {
+            commit('AUTH_SUCCEED', msg.token);
+          } else {
+            commit('AUTH_FAILED');
+          }
         }
       });
     },
 
     signIn() {
-      const port = chrome.runtime.connect({ name: 'auth' });
-      port.postMessage();
-      port.onMessage.addListener((access_token) => {
-        storage.sync.set({ token: access_token });
-      });
+      utils.message('auth', { type: 'signIn' });
     },
     signOut() {
-      storage.sync.set({ token: null });
+      utils.message('auth', { type: 'signOut' });
     },
   },
 };

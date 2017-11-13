@@ -123,9 +123,7 @@ export default {
       };
     },
     cropCapture() {
-      this.capture.v.crop().then((imgURL) => {
-        this.contents = `![](${imgURL})\n${this.contents}`;
-      });
+      this.capture.v.crop();
     },
     cancelCaptue() {
       this.capture.v.destroy();

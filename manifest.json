@@ -15,18 +15,24 @@
         "http://*/*",
         "https://*/*"
       ],
-      "css": ["dev.css"],
-      "js": ["dev.js"]
+      "css": [
+        "content/inject/style.css",        
+        "content/capture/lib/cropper.min.css"
+      ],
+      "js": [
+        "content/inject/index.js",
+        "content/message.js",        
+        "content/auth.js",
+        "content/ui.js",
+        "content/capture/index.js",
+        "content/capture/lib/cropper.min.js"        
+      ]
     }
   ],
 
   "background": {
     "scripts": ["background.js"]
   },
-
-  "web_accessible_resources": [
-    "./content/dist/static/css/app.css"
-  ],
 
   "oauth2": {
     "client_id": "868497383059-aqol75cjtsi69jiralrj1827cp7l87nu.apps.googleusercontent.com",

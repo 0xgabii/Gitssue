@@ -15,9 +15,9 @@
 <script>
 import { mapGetters, mapState, mapActions } from 'vuex';
 
-import CotentsView from './components/ContentsView';
+import utils from './helpers/utils';
 
-const iframe = window.parent.document.getElementById('vGitssue');
+import CotentsView from './components/ContentsView';
 
 export default {
   name: 'app',
@@ -42,7 +42,7 @@ export default {
       'changeUI',
     ]),
     handleIframeStyle(style = this.computedStyle) {
-      Object.assign(iframe.style, style);
+      utils.message('ui', { type: 'changeStyle', value: style });
     },
   },
   created() {
