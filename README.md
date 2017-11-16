@@ -12,6 +12,7 @@ Manage your github issue by chrome extension
   - Customizable position & resizing by user
   - Synchronize ui when page load, refresh, move tab, etc.
   - ~~iOS like tab bar [example](https://dribbble.com/shots/3592462-iOS-Tab)~~
+  - Discord, Slack UI
 - Editor like notepad
     - ~~tab, shift + tab for indent/unindent~~
     - ctrl + z, ctrl + y for undo/redo
