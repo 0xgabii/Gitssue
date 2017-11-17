@@ -99,6 +99,7 @@ export default {
         params: {
           access_token: this.token,
           filter: 'all',
+          state: 'all',
         },
       }).then((data) => {
         this.list = data;

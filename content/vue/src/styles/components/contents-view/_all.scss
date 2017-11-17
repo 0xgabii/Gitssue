@@ -5,6 +5,7 @@
   height: inherit;
 
   @import 'header';
+  @import 'wrapper';
   @import 'body';
-  @import 'footer'; 
+  @import 'sidebar';
 }

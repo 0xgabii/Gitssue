@@ -1,5 +1,5 @@
 <template>
-  <div class="issue">
+  <div class="issuePage">
 
     <!-- main -->
     <template>
@@ -8,19 +8,13 @@
 
       <template v-else>
 
-        <div class="issue-info">
-          {{extractIssue.title}}
-        </div>
-
         <div class="main">
           <div class="main-info">
-            <div>        
-              <img class="main-info__profile" :src="extractIssue.author.profile" />
-              <div class="main-info__author">
-                <p>{{extractIssue.author.name}}</p>
-                <span>created <relative-time :utc="extractIssue.time" /></span>
-              </div>          
-            </div>
+            <img class="main-info__profile" :src="extractIssue.author.profile" />
+            <div class="main-info__author">
+              <p>{{extractIssue.author.name}}</p>
+              <span>created <relative-time :utc="extractIssue.time" /></span>
+            </div>          
 
             <button>
               <i class="ion-edit" />
@@ -175,16 +169,6 @@ export default {
         this.comments = data;
         this.loading.content = false;
       });
-
-      /* utils.requestGithub({
-        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}/timeline`,
-        headers: {
-          Accept: 'application/vnd.github.mockingbird-preview',
-        },
-        params: {
-          access_token: this.token,
-        },
-      }); */
     },
   },
   created() {
