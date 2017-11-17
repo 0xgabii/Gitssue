@@ -4,6 +4,9 @@ Manage your github issue by chrome extension
 
 ## TODO
 
+- Github API: 
+  - ~~REST~~
+  - GraphQL
 - ~~Github login~~
 - Manage issue
   - CRUD
