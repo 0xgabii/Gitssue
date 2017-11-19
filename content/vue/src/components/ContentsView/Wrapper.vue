@@ -1,11 +1,11 @@
 <template>
-  <div class="contentsView-body">
+  <div class="contentsView-wrapper">
     <router-view />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ContentsViewBody',
+  name: 'ContentsViewWrapper',
 };
 </script>

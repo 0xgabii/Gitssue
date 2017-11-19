@@ -3,13 +3,13 @@
 
     <header-nav />
 
-    <div class="contentsView-wrapper">
+    <div class="contentsView-body">
 
       <template v-if="auth">
 
         <side-bar />
   
-        <content-body />
+        <wrapper />
 
       </template>
 
@@ -28,7 +28,7 @@ import { mapState, mapActions } from 'vuex';
 
 import Header from './Header';
 import SideBar from './SideBar';
-import Body from './Body';
+import Wrapper from './Wrapper';
 
 export default {
   name: 'ContentsView',
@@ -44,7 +44,7 @@ export default {
   },
   components: {
     HeaderNav: Header,
-    ContentBody: Body,
+    Wrapper,
     SideBar,
   },
 };

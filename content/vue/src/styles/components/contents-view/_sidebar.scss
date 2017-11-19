@@ -1,3 +1,56 @@
 &-sidebar {
-  
+  padding: 0.5rem 0.75rem;
+  background-color: $black;
+
+  .circle {
+    position: relative;
+    width: 3rem;
+    height: 3rem;
+    background-color: lighten($black, 10%);
+    color: white;    
+
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .user {
+
+    &__profile {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .repo {
+    margin: 0.5rem 0;
+    border-radius: 100%;
+
+    &--none {
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.5);
+
+      i {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        font-size: 2.5rem;
+        transform: translate(-50%, -50%);
+      }
+
+      &:hover {
+        border-color: white;
+        color: white;
+      }
+    }
+
+    &__name {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      white-space: nowrap;
+      transform: translate(-50%, -50%);
+    }
+  }
 }
