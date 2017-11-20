@@ -1,0 +1,34 @@
+.vb > .vb-dragger {
+  z-index: 5;
+  width: 12px;
+  right: 0;
+}
+
+.vb > .vb-dragger > .vb-dragger-styler {
+  display: block;
+  margin: 5px 5px 5px 0;
+  
+  height: calc(100% - 10px);
+  border-radius: 3rem;
+  background-color: hsla(210, 9%, 13%, 0.3);
+  
+  backface-visibility: hidden;
+  transform: rotate3d(0,0,0,0);
+  transition: all 0.3s;
+}
+
+.vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
+  background-color: hsla(210, 9%, 13%, 0.8);
+}
+
+.vb > .vb-dragger:hover > .vb-dragger-styler {
+  background-color: hsla(210, 9%, 13%, 0.8);
+}
+
+.vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
+  background-color: hsla(210, 9%, 13%, 0.8);
+}
+
+.vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
+  background-color: hsla(210, 9%, 13%, 0.8);
+}
