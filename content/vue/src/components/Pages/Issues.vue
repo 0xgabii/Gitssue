@@ -1,46 +1,24 @@
 <template>
   <div class="issuesPage">
-    New issue
 
-    <loading-spinner v-if="loading" />
+    <div class="issues" v-bar>
 
-    <ul v-else class="issuesList">
-      <router-link
-        v-for="item in extractList"
-        class="issue"
-        tag="li"
-        replace
-        :key="item.id"
-        :to="{ name: 'Issue', params: { issueId: item.number } }">
+      <div>
 
-        <div class="issue-info">
-          <span 
-            v-for="label in item.labels" 
-            :key="label.name"
-            :style="{ backgroundColor: label.color }">
-            {{label.name}}
-          </span>
-
-          <h3>
-            {{item.title}}
-          </h3>
-
-          <p>
-            {{item.state}}
-            <relative-time :utc="item.time" />            
-            by {{item.author}}
-          </p>
-        </div>
-
-        <div
-          class="issue-comments"
-          :class="{'issue-comments--none': !item.comments_count}">
-          <i class="ion-ios-chatboxes-outline"/>
-          {{item.comments_count}}
-        </div>
+        <router-link 
+          class="issue"
+          v-for="issue in issues"
+          tag="div"
+          :key="issue.id"
+          :to="{ name: 'Issue', params: { number: issue.number } }">
+          {{ issue.title }}
+        </router-link>
         
-      </router-link>
-    </ul>
+      </div>
+
+    </div>
+    
+    <router-view class="router-view" />
 
   </div>
 </template>
@@ -57,6 +35,7 @@ export default {
   name: 'IssuesPage',
   data: () => ({
     list: [],
+    issues: [],
     loading: false,
   }),
   computed: {
@@ -88,28 +67,37 @@ export default {
       }));
     },
   },
+  watch: {
+    $route() {
+      this.requestIssues();
+    },
+  },
   methods: {
     requestIssues() {
       const { owner, name } = this.$route.params;
 
-      this.loading = true;
-
-      utils.requestGithub({
-        url: `https://api.github.com/repos/${owner}/${name}/issues`,
-        params: {
-          access_token: this.token,
-          filter: 'all',
-          state: 'all',
-        },
-      }).then((data) => {
-        this.list = data;
-        this.loading = false;
-      });
-    },
-    requestIssue(url) {
-      this.$emit('move-page', {
-        component: 'issue',
-        props: { url },
+      utils.request({
+        token: this.token,
+        query: `{
+          repository(owner: "${owner}" name: "${name}") {
+            issues(first: 15 orderBy: {field: CREATED_AT, direction: DESC} states: OPEN) {
+              edges {
+                node {
+                  id,
+                  number,
+                  title,
+                  createdAt
+                }
+              }
+            }
+          }
+        }`,
+      }).then(({ repository }) => {
+        this.issues = repository.issues.edges.map(({ node }) => ({
+          id: node.id,
+          number: node.number,
+          title: node.title,
+        }));
       });
     },
   },

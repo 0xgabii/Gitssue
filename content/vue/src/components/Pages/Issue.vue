@@ -1,62 +1,28 @@
 <template>
   <div class="issuePage">
+    
+    <div class="header">
+      #{{issue.number}} | {{issue.title}}
+    </div>
 
-    <!-- main -->
-    <template>
+    <div class="issue" v-bar>
 
-      <loading-spinner v-if="loading.content" />
+      <div>
 
-      <template v-else>
+        <div class="main markdown-preview" v-html="issue.bodyHTML" />
 
-        <div class="main">
-          <div class="main-info">
-            <img class="main-info__profile" :src="extractIssue.author.profile" />
-            <div class="main-info__author">
-              <p>{{extractIssue.author.name}}</p>
-              <span>created <relative-time :utc="extractIssue.time" /></span>
-            </div>          
-
-            <button>
-              <i class="ion-edit" />
-              edi
-            </button>
-          </div>
-
-          <div class="main__content markdown-preview" v-html="extractIssue.body" />
+        <div class="comments">
+          <div 
+            class="comment markdown-preview"
+            v-for="comment in comments"
+            :key="comment.id"
+            v-html="comment.bodyHTML"
+          />
         </div>
 
-      </template>
-
-    </template>
-
-    <!-- comments -->
-    <template>
-
-      <loading-spinner v-if="loading.comments" />
-
-      <div 
-        class="comment"
-        v-else
-        v-for="comment in extractComments"
-        :key="comment.id">
-        <div class="comment-info">
-          <div>        
-            <img class="comment-info__profile" :src="comment.author.profile" />
-            <div class="comment-info__author">
-              <p>{{comment.author.name}}</p>
-              <span>commented <relative-time :utc="comment.time" /></span>
-            </div>          
-          </div>
-
-          <button>
-            <i class="ion-edit" />
-            edit
-          </button>
-        </div>
-        <div class="comment__content markdown-preview" v-html="comment.body" />
       </div>
 
-    </template>
+    </div>
 
   </div>
 </template>
@@ -91,6 +57,7 @@ export default {
     ...mapState('auth', [
       'token',
     ]),
+    /*
     extractIssue() {
       const {
         id,
@@ -135,39 +102,43 @@ export default {
         },
         time: created_at,
       }));
+    }, */
+  },
+  watch: {
+    $route() {
+      this.requestIssue();
     },
   },
   methods: {
     requestIssue() {
-      const { owner, name, issueId } = this.$route.params;
+      const { owner, name, number } = this.$route.params;
 
-      this.loading.content = true;
-
-      utils.requestGithub({
-        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}`,
-        params: {
-          access_token: this.token,
-        },
-      }).then((data) => {
-        this.issue = data;
-        this.loading.content = false;
-
-        this.requestComments();
-      });
-    },
-    requestComments() {
-      const { owner, name, issueId } = this.$route.params;
-
-      this.loading.content = true;
-
-      utils.requestGithub({
-        url: `https://api.github.com/repos/${owner}/${name}/issues/${issueId}/comments`,
-        params: {
-          access_token: this.token,
-        },
-      }).then((data) => {
-        this.comments = data;
-        this.loading.content = false;
+      utils.request({
+        token: this.token,
+        query: `{
+          repository(owner: "${owner}" name: "${name}") {
+            issue(number: ${number}) {
+              id,
+              number,
+              title,
+              bodyHTML,
+              comments(first: 10) {
+                edges {
+                  node {
+                    id,
+                    bodyHTML,
+                  }
+                }
+              }
+            }
+          }
+        }`,
+      }).then(({ repository }) => {
+        this.issue = repository.issue;
+        this.comments = repository.issue.comments.edges.map(({ node }) => ({
+          id: node.id,
+          bodyHTML: node.bodyHTML,
+        }));
       });
     },
   },
