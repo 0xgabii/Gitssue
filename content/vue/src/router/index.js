@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import Repos from '../components/Pages/Repos';
 import Issues from '../components/Pages/Issues';
 import Issue from '../components/Pages/Issue';
+import NewIssue from '../components/Pages/NewIssue';
 
 Vue.use(VueRouter);
 
@@ -13,14 +14,18 @@ export default new VueRouter({
       path: '/',
       name: 'Repos',
       component: Repos,
+    },
+    {
+      path: ':owner/:name/issues',
+      component: Issues,
       children: [
         {
-          path: ':owner/:name/issues',
+          path: '',
           name: 'Issues',
-          component: Issues,
+          component: NewIssue,
         },
         {
-          path: ':owner/:name/issues/:issueId',
+          path: ':number',
           name: 'Issue',
           component: Issue,
         },
