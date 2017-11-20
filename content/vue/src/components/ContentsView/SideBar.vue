@@ -18,13 +18,19 @@
       class="circle repo"
       tag="div"
       :key="repo.id"
-      to="lol">
+      :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }">
+
       <span class="repo__name">
-        {{repo.name}}
+        {{repo.name.slice(0, 4)}}
       </span>
+      
+      <label v-if="repo.open_issues" class="repo__openIssues">
+        {{repo.open_issues}}
+      </label>
+
     </router-link>
   
-    <div class="circle repo repo--none">
+    <div class="circle repo repo--plus">
       <i class="ion-ios-plus-empty" />
     </div>
 
@@ -84,7 +90,13 @@ export default {
             edges {
               node {
                 id,
-                name
+                name,
+                owner {
+                  login
+                },
+                issues(states: OPEN) {
+                  totalCount
+                }
               }
             }
           }
@@ -92,7 +104,9 @@ export default {
       }`).then(({ viewer }) => {
         this.repos = viewer.repositories.edges.map(({ node }) => ({
           id: node.id,
-          name: node.name.slice(0, 4),
+          name: node.name,
+          owner: node.owner.login,
+          open_issues: node.issues.totalCount,
         }));
       });
     },
