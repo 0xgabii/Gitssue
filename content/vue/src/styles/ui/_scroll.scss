@@ -10,7 +10,7 @@
   
   height: calc(100% - 10px);
   border-radius: 3rem;
-  background-color: hsla(210, 9%, 13%, 0.3);
+  background-color: hsla(210, 9%, 13%, 0%);
   
   backface-visibility: hidden;
   transform: rotate3d(0,0,0,0);
@@ -18,17 +18,17 @@
 }
 
 .vb.vb-scrolling-phantom > .vb-dragger > .vb-dragger-styler {
-  background-color: hsla(210, 9%, 13%, 0.8);
+  background-color: hsl(210, 9%, 13%);
 }
 
 .vb > .vb-dragger:hover > .vb-dragger-styler {
-  background-color: hsla(210, 9%, 13%, 0.8);
+  background-color: hsl(210, 9%, 13%);
 }
 
 .vb.vb-dragging > .vb-dragger > .vb-dragger-styler {
-  background-color: hsla(210, 9%, 13%, 0.8);
+  background-color: hsl(210, 9%, 13%);
 }
 
 .vb.vb-dragging-phantom > .vb-dragger > .vb-dragger-styler {
-  background-color: hsla(210, 9%, 13%, 0.8);
+  background-color: hsl(210, 9%, 13%);
 }

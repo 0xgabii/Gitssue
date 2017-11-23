@@ -6,12 +6,32 @@
       <div>
 
         <router-link 
-          class="issue"
           v-for="issue in issues"
           tag="div"
+          class="issue"          
+          :class="`issue--${issue.state.toLowerCase()}`"
           :key="issue.id"
           :to="{ name: 'Issue', params: { number: issue.number } }">
-          {{ issue.title }}
+
+          <span
+            v-for="label in issue.labels"
+            class="issue__tag"
+            :key="label.id"
+            :style="{ color: label.color, backgroundColor: label.bgColor }">
+            {{label.name}}
+          </span>
+
+          <h3 class="issue__title">{{issue.title}}</h3>
+
+          <p class="issue-info">
+            <span>
+              {{issue.author}} - <relative-time :utc="issue.time" />
+            </span>
+            <span v-if="issue.comments">
+              <i class="ion-ios-chatboxes" />{{issue.comments}}
+            </span>
+          </p>
+
         </router-link>
         
       </div>
@@ -34,7 +54,6 @@ import utils from '../../helpers/utils';
 export default {
   name: 'IssuesPage',
   data: () => ({
-    list: [],
     issues: [],
     loading: false,
   }),
@@ -42,30 +61,6 @@ export default {
     ...mapState('auth', [
       'token',
     ]),
-    extractList() {
-      if (!this.list.length) return [];
-
-      return this.list.map(({
-        id,
-        state,
-        title,
-        number,
-        labels,
-        comments,
-        user,
-        created_at,
-        closed_at,
-      }) => ({
-        id,
-        title,
-        number,
-        labels: labels.map(({ name, color }) => ({ name, color: `#${color}` })),
-        comments_count: comments,
-        author: user.login,
-        state: state === 'open' ? 'opened' : 'closed',
-        time: state === 'open' ? created_at : closed_at,
-      }));
-    },
   },
   watch: {
     $route() {
@@ -80,23 +75,58 @@ export default {
         token: this.token,
         query: `{
           repository(owner: "${owner}" name: "${name}") {
-            issues(first: 15 orderBy: {field: CREATED_AT, direction: DESC} states: OPEN) {
+            issues(first: 10 orderBy: {field: CREATED_AT, direction: DESC}) {
               edges {
                 node {
-                  id,
-                  number,
-                  title,
+                  id
+                  number
+                  title
+                  author {
+                    login
+                  }
+                  labels (first: 3) {
+                    edges {
+                      node {
+                        id
+                        name
+                        color
+                      }
+                    }
+                  }
+                  state
                   createdAt
+                  comments {
+                    totalCount
+                  }
                 }
               }
             }
           }
         }`,
       }).then(({ repository }) => {
-        this.issues = repository.issues.edges.map(({ node }) => ({
-          id: node.id,
-          number: node.number,
-          title: node.title,
+        this.issues = repository.issues.edges.map(({ node: {
+          id,
+          number,
+          title,
+          author,
+          labels,
+          state,
+          createdAt,
+          comments,
+        } }) => ({
+          id,
+          number,
+          title,
+          author: author.login,
+          labels: labels ? labels.edges.map(({ node }) => ({
+            id: node.id,
+            name: node.name,
+            color: parseInt('ffffff', 16) / 2 > parseInt(node.color, 16) ? '#fff' : '#000',
+            bgColor: `#${node.color}`,
+          })) : [],
+          state,
+          time: createdAt,
+          comments: comments.totalCount,
         }));
       });
     },
