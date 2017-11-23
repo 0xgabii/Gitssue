@@ -41,6 +41,7 @@ module.exports = {
     'camelcase': 0,
     'no-param-reassign': 0,
     'linebreak-style': 0,
-    "class-methods-use-this": 0
+    "class-methods-use-this": 0,
+    'prefer-numeric-literals': 0,
   }
 }
