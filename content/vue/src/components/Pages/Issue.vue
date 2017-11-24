@@ -2,16 +2,35 @@
   <div class="issuePage">
     
     <div class="header">
-      #{{issue.number}} | {{issue.title}}
+
+      <div class="info">
+        <span
+          v-for="label in issue.labels"
+          class="info__tag"
+          :key="label.id"
+          :style="{ color: label.color, backgroundColor: label.bgColor }">
+          {{label.name}}
+        </span>
+
+        <h2 class="info__title">{{issue.title}}</h2>
+      </div>
+
+      <span v-if="issue.comments" class="comments">
+        <i class="ion-ios-chatboxes" /> {{issue.comments}}
+      </span>
+
     </div>
 
-    <div class="issue" v-bar>
+    <div class="content">
 
-      <div>
+      <template>
+        <loading-spinner v-if="loading.issue" />
+        <div v-else class="main markdown-preview" v-html="issue.bodyHTML" />
+      </template>
 
-        <div class="main markdown-preview" v-html="issue.bodyHTML" />
-
-        <div class="comments">
+      <template>
+        <loading-spinner v-if="loading.comments" />
+        <div v-else class="comments">
           <div 
             class="comment markdown-preview"
             v-for="comment in comments"
@@ -19,8 +38,7 @@
             v-html="comment.bodyHTML"
           />
         </div>
-
-      </div>
+      </template>
 
     </div>
 
@@ -39,7 +57,7 @@ import LoadingSpinner from '../Common/LoadingSpinner';
 import utils from '../../helpers/utils';
 
 marked.setOptions({
-  highlight: code => hljs.highlightAuto(code).value,
+  highlight: str => hljs.highlightAuto(str).value,
   breaks: true,
 });
 
@@ -48,8 +66,9 @@ export default {
   data: () => ({
     issue: {},
     comments: [],
+
     loading: {
-      content: false,
+      issue: false,
       comments: false,
     },
   }),
@@ -57,55 +76,12 @@ export default {
     ...mapState('auth', [
       'token',
     ]),
-    /*
-    extractIssue() {
-      const {
-        id,
-        labels,
-        state,
-        title,
-        body,
-        user,
-        author_association,
-        created_at,
-        closed_at,
-      } = this.issue;
-
-      return {
-        id,
-        labels: labels.map(({ name, color }) => ({ name, color: `#${color}` })),
-        title,
-        body: marked(body),
-        author: {
-          profile: user.avatar_url,
-          name: user.login,
-          association: author_association,
-        },
-        state: state === 'open' ? 'opened' : 'closed',
-        time: state === 'open' ? created_at : closed_at,
-      };
-    },
-    extractComments() {
-      return this.comments.map(({
-        id,
-        body,
-        author_association,
-        user,
-        created_at,
-      }) => ({
-        id,
-        body: marked(body),
-        author: {
-          profile: user.avatar_url,
-          name: user.login,
-          association: author_association,
-        },
-        time: created_at,
-      }));
-    }, */
   },
   watch: {
     $route() {
+      this.issue = {};
+      this.comments = [];
+
       this.requestIssue();
     },
   },
@@ -113,32 +89,83 @@ export default {
     requestIssue() {
       const { owner, name, number } = this.$route.params;
 
+      this.loading.issue = true;
+
       utils.request({
         token: this.token,
         query: `{
           repository(owner: "${owner}" name: "${name}") {
             issue(number: ${number}) {
-              id,
-              number,
-              title,
-              bodyHTML,
-              comments(first: 10) {
+              id
+              title
+              author {
+                login
+              }
+              labels (first: 5) {
                 edges {
                   node {
-                    id,
-                    bodyHTML,
+                    id
+                    name
+                    color
+                  }
+                }
+              }
+              body
+              createdAt
+              comments {
+                totalCount
+              }
+            }
+          }
+        }`,
+      }).then(({ repository: { issue } }) => {
+        this.issue = {
+          ...issue,
+          author: issue.author.login,
+          labels: issue.labels ? issue.labels.edges.map(({ node }) => ({
+            id: node.id,
+            name: node.name,
+            color: parseInt('ffffff', 16) / 2 > parseInt(node.color, 16) ? '#fff' : '#000',
+            bgColor: `#${node.color}`,
+          })) : [],
+          bodyHTML: marked(issue.body),
+          comments: issue.comments.totalCount,
+        };
+
+        this.loading.issue = false;
+
+        if (issue.comments.totalCount) this.requestComments(issue.comments.totalCount);
+      });
+    },
+    requestComments(num) {
+      const { owner, name, number } = this.$route.params;
+
+      this.loading.comments = true;
+
+      utils.request({
+        token: this.token,
+        query: `{
+          repository(owner: "${owner}" name: "${name}") {
+            issue(number: ${number}) {
+              comments(first: ${num}) {
+                edges {
+                  node {
+                    id
+                    body
+                    createdAt
                   }
                 }
               }
             }
           }
         }`,
-      }).then(({ repository }) => {
-        this.issue = repository.issue;
-        this.comments = repository.issue.comments.edges.map(({ node }) => ({
+      }).then(({ repository: { issue } }) => {
+        this.comments = issue.comments.edges.map(({ node }) => ({
           id: node.id,
-          bodyHTML: node.bodyHTML,
+          bodyHTML: marked(node.body),
         }));
+
+        this.loading.comments = false;
       });
     },
   },
