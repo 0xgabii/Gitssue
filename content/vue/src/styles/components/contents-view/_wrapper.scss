@@ -1,4 +1,6 @@
 &-wrapper {
   flex: 1;
   overflow: hidden;
+  background-color: lighten($black, 8%);
+  color: white;
 }
