@@ -1,8 +1,18 @@
 .issuePage {
   display: flex;
-  flex-direction: column;
-
   overflow: hidden;
+
+  .issue {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    overflow: hidden;
+  }
+
+  .scrollHelper {
+    width: 10rem;
+  }
 
   .header {
     display: flex;
@@ -44,6 +54,7 @@
   .content {
     flex: 1;
 
+    padding-top: 1rem;
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -60,6 +71,50 @@
       background-color: $black;
       border: 2px solid lighten($black, 13%);
       border-radius: 7.5px;
+    }
+
+    .main {
+      padding: 1rem 1.5rem;
+    }
+
+    .comments {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      
+      .comment {
+        display: flex;
+
+        margin: 0 1.25rem;
+        padding: 1.5rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+        &__authorAvatar {
+          margin-right: 1rem;
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 100%;
+          box-shadow: $shadow-0;
+        }
+
+        &__authorName {
+          margin-bottom: 0.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          color: white;
+
+          time {
+            margin-left: 0.3rem;
+            font-weight: normal;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.75);
+          }
+        }
+
+        &-body {
+          flex: 1;
+
+          overflow: hidden;
+        }
+      }
     }
   }
 }
