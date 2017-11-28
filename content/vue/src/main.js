@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
 import Vuebar from 'vuebar';
+import VueScrollTo from 'vue-scrollto';
 
 import App from './App';
 
@@ -11,6 +12,7 @@ import router from './router';
 
 Vue.config.productionTip = false;
 
+Vue.use(VueScrollTo);
 Vue.use(Vuebar);
 
 // force link from iframe to be opened in the parent window
