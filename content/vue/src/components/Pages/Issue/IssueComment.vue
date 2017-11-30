@@ -20,9 +20,10 @@
       </div>
 
       <div 
-        class="comment-body markdown-preview" 
-        v-html="txt2MD(data.body)"
-      />
+        class="comment-body">
+        <loading-spinner v-if="loading" />
+        <div v-else class="markdown-preview" v-html="markdownHTML" />
+      </div>
     </div>
   </div>
 </template>
@@ -41,10 +42,18 @@ export default {
   props: [
     'data',
   ],
-  methods: {
-    txt2MD(text) {
-      return marked(text);
-    },
+  data: () => ({
+    loading: true,
+    markdownHTML: undefined,
+  }),
+  created() {
+    setTimeout(() => {
+      marked(this.data.body, (err, content) => {
+        if (err) throw err;
+        this.markdownHTML = content;
+        this.loading = false;
+      });
+    }, 0);
   },
 };
 </script>
