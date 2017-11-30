@@ -46,9 +46,6 @@
 <script>
 import { mapState } from 'vuex';
 
-import RelativeTime from '../Common/RelativeTime';
-import LoadingSpinner from '../Common/LoadingSpinner';
-
 import utils from '../../helpers/utils';
 
 export default {
@@ -76,35 +73,31 @@ export default {
         query: `{
           repository(owner: "${owner}" name: "${name}") {
             issues(first: 10 orderBy: {field: CREATED_AT, direction: DESC}) {
-              edges {
-                node {
-                  id
-                  number
-                  title
-                  author {
-                    login
+              nodes {
+                id
+                number
+                title
+                author {
+                  login
+                }
+                labels (first: 3) {
+                  nodes {
+                    id
+                    name
+                    color
                   }
-                  labels (first: 3) {
-                    edges {
-                      node {
-                        id
-                        name
-                        color
-                      }
-                    }
-                  }
-                  state
-                  createdAt
-                  comments {
-                    totalCount
-                  }
+                }
+                state
+                createdAt
+                comments {
+                  totalCount
                 }
               }
             }
           }
         }`,
       }).then(({ repository }) => {
-        this.issues = repository.issues.edges.map(({ node: {
+        this.issues = repository.issues.nodes.map(({
           id,
           number,
           title,
@@ -113,12 +106,12 @@ export default {
           state,
           createdAt,
           comments,
-        } }) => ({
+        }) => ({
           id,
           number,
           title,
           author: author.login,
-          labels: labels ? labels.edges.map(({ node }) => ({
+          labels: labels ? labels.nodes.map(node => ({
             id: node.id,
             name: node.name,
             color: parseInt('ffffff', 16) / 2 > parseInt(node.color, 16) ? '#fff' : '#000',
@@ -133,10 +126,6 @@ export default {
   },
   created() {
     this.requestIssues();
-  },
-  components: {
-    RelativeTime,
-    LoadingSpinner,
   },
 };
 </script>
