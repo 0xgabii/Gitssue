@@ -1,0 +1,44 @@
+.comment {
+  display: flex;
+
+  .column {    
+
+    &--left {
+      margin-right: 1.25rem;
+    }
+
+    &--right {
+      flex: 1;
+      overflow: hidden;
+    }
+  }
+
+  &__authorAvatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100%;
+  }
+
+  &-info {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 0.5rem;
+
+    &__authorName {
+      font-size: 1rem;
+      font-weight: 500;
+      color: white;
+    }
+
+    &__createdAt {
+      margin-left: 0.5rem;
+      font-weight: normal;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+
+  &-body {
+  }
+}

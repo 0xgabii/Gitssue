@@ -1,0 +1,52 @@
+.event {
+  display: flex;
+  align-items: center;
+
+  padding: 1.5rem;  
+  background-color: lighten($black, 5%);
+  border: none;  
+  border-radius: 3px;
+
+  &--closed {
+
+    .event__icon {
+      background-color: red;
+    }
+  }
+
+  &--reopened {
+
+    .event__icon {
+      background-color: $blue;
+    }
+  }
+
+  &__icon {
+    position: relative;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 100%;
+
+    i {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      font-size: 0.7rem;
+      color: white;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &__actorName {
+    margin: 0 0.3rem;
+    font-weight: 500;
+  }
+
+  &__info {
+    font-size: 0.9rem;
+
+    time {
+      color: rgba(255, 255, 255, 0.7);
+    }
+  }
+}
