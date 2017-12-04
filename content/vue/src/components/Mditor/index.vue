@@ -1,14 +1,11 @@
 <template>
   <div class="mditor">
 
-    <div class="mditor-header">
-      <input type="text" v-model="title" placeholder="Title">
-    </div>
-
     <div class="mditor-controls">
-      <div class="mditor-controls__tab">
+      <div class="tabNav">
         <span
         v-for="tab in tabs"
+        class="tabNav__tab"
         :class="{ active: mode === tab }"
         :key="tab"
         @click="mode = tab">
@@ -16,41 +13,39 @@
         </span>
       </div>
 
-      <div class="mditor-controls__utils" v-if="mode === tabs[0]">
-        <template v-if="capture.active">
-          <span @click="cropCapture">Select & crop</span>
-          <span @click="cancelCaptue">Cancel</span>
-        </template>
+      <div class="toolbar">
+       
+        <button 
+          v-if="mode === tabs[0]"
+          @click="modals.capture = true">
+          <i class="ion-camera" /> Capture
+        </button>
 
-        <template v-else>
-          <span @click="startCapture('full')">Full page</span>
-          <span @click="startCapture('visible')">Visible page</span>
-        </template>
+
       </div>
     </div>
 
-    <div 
-      class="mditor-writeBox"
-      v-if="mode === 'write'">
-      <textarea 
-        v-model="contents"
-        ref='textarea'
-        placeholder="Write your content"
-        spellcheck="false"
-        @input="autoHeight($event.target)"
-        @keydown.tab.prevent="indentText"
-      />
-    </div>
+    <textarea 
+      v-if="mode === 'write'"
+      class="mditor__textArea"
+      ref='textarea'
+      spellcheck="false"
+      :value="value"
+      :placeholder="placeholder"
+      @input="handleInput"
+      @keydown.tab.prevent="indentText">
+    </textarea>
 
     <div 
-      class="mditor-previewBox markdown-preview" 
       v-else
-      v-html="parsedText"
+      class="mditor__preview markdown-preview" 
+      v-html="parsedText"      
     />
 
-    <div class="mditor-footer">
-      <button @click="handleSubmit">{{submitText}}</button>
-    </div>
+    <capture-modal 
+      v-show="modals.capture"
+      @close="modals.capture = false" 
+    />
     
   </div>
 </template>
@@ -59,7 +54,7 @@
 import marked from 'marked';
 import hljs from 'highlight.js';
 
-import Capture from './capture';
+import CaptureModal from './CaptureModal';
 
 marked.setOptions({
   highlight: code => hljs.highlightAuto(code).value,
@@ -69,69 +64,47 @@ marked.setOptions({
 export default {
   name: 'Mditor',
   props: {
-    submitText: {
+    value: {
       type: String,
-      default: 'Submit',
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: 'Write your contents',
     },
   },
   data: () => ({
-    title: '',
-    contents: '',
-
     tabs: ['write', 'preview'],
     mode: 'write',
 
-    capture: {
-      active: false,
-      v: undefined,
+    modals: {
+      capture: false,
     },
   }),
   computed: {
     parsedText() {
-      return marked(this.contents) || 'Type contents first!';
+      return marked(this.value) || 'No contents for preview';
     },
   },
   watch: {
     mode(v) {
       if (v === 'write') {
         this.$nextTick(() => {
-          this.autoHeight(this.$refs.textarea);
+          this.autoHeight();
         });
       }
     },
   },
   methods: {
-    handleSubmit() {
-      this.$emit('submit', {
-        title: this.title,
-        contents: this.contents,
-      });
+    handleInput(e) {
+      this.autoHeight();
+      this.$emit('input', e.target.value);
     },
 
-    autoHeight(target) {
+    autoHeight() {
+      const target = this.$refs.textarea;
       target.style.height = 'auto';
-      target.style.height = `${target.scrollHeight}px`;
-    },
-
-    startCapture(type) {
-      const capture = new Capture(type);
-      capture.init();
-
-      this.capture = {
-        active: true,
-        v: capture,
-      };
-    },
-    cropCapture() {
-      this.capture.v.crop();
-    },
-    cancelCaptue() {
-      this.capture.v.destroy();
-
-      this.capture = {
-        active: false,
-        v: undefined,
-      };
+      target.style.height = `${target.scrollHeight + 10}px`;
     },
 
     indentText(e) {
@@ -204,6 +177,14 @@ export default {
         e.target.selectionEnd = startPos + indent.length;
       }
     },
+  },
+  created() {
+    this.$nextTick(() => {
+      this.autoHeight();
+    });
+  },
+  components: {
+    CaptureModal,
   },
 };
 </script>
