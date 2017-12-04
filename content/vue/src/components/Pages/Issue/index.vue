@@ -21,7 +21,7 @@
 
     </header>
 
-    <section class="content">
+    <section class="content custom-scroll">
 
       <loading-spinner v-if="loading" />
       
@@ -33,6 +33,13 @@
           <component 
             :is="event.__typename" 
             :data="event"
+          />
+        </div>
+
+        <div class="timeline-item">
+          <add-comment
+            :info="info"
+            :viewer="viewer" 
           />
         </div>
       </div>
@@ -47,16 +54,18 @@ import { mapState } from 'vuex';
 
 import utils from '../../../helpers/utils';
 
+import IssueMain from './IssueMain';
 import IssueComment from './IssueComment';
 import ClosedEvent from './ClosedEvent';
 import ReopenedEvent from './ReopenedEvent';
+import AddComment from './AddComment';
 
 export default {
   name: 'IssuePage',
   data: () => ({
     info: {},
     timeline: [],
-
+    viewer: {},
     loading: false,
   }),
   computed: {
@@ -66,9 +75,6 @@ export default {
   },
   watch: {
     $route() {
-      this.info = {};
-      this.timeline = [];
-
       this.requestIssue();
     },
   },
@@ -76,6 +82,8 @@ export default {
     requestIssue() {
       const { owner, name, number } = this.$route.params;
 
+      this.info = {};
+      this.timeline = [];
       this.loading = true;
 
       utils.request({
@@ -89,6 +97,7 @@ export default {
                 avatarUrl
                 login
               }
+              viewerCanUpdate
               labels (first: 5) {
                 nodes {
                   id
@@ -97,6 +106,7 @@ export default {
                 }
               }
               body
+              closed
               createdAt
               comments {
                 totalCount
@@ -106,8 +116,12 @@ export default {
               }
             }
           }
+          viewer {
+            login
+            avatarUrl
+          }
         }`,
-      }).then(({ repository: { issue } }) => {
+      }).then(({ viewer, repository: { issue } }) => {
         this.info = {
           title: issue.title,
           labels: issue.labels ? issue.labels.nodes.map(node => ({
@@ -117,10 +131,16 @@ export default {
             bgColor: `#${node.color}`,
           })) : [],
           comments: issue.comments.totalCount,
+          viewerCanUpdate: issue.viewerCanUpdate,
+          closed: issue.closed,
+        };
+
+        this.viewer = {
+          ...viewer,
         };
 
         this.timeline.push({
-          __typename: 'IssueComment',
+          __typename: 'IssueMain',
           ...issue,
         });
 
@@ -140,12 +160,15 @@ export default {
               timeline(first: ${num}) {
                 nodes {
                   __typename
-                  ... on Comment {
+                  ... on IssueComment {
                     id
+                    databaseId
                     author {
                       avatarUrl
                       login
                     }
+                    viewerCanDelete
+                    viewerCanUpdate
                     body
                     createdAt
                   }
@@ -182,9 +205,11 @@ export default {
     this.requestIssue();
   },
   components: {
+    IssueMain,
     IssueComment,
     ClosedEvent,
     ReopenedEvent,
+    AddComment,
   },
 };
 </script>

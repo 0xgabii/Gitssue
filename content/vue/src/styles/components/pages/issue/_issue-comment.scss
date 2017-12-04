@@ -1,6 +1,12 @@
 .comment {
   display: flex;
 
+  position: relative;
+
+  &:hover .comment-control {
+    z-index: 1;
+  }
+
   .column {    
 
     &--left {
@@ -16,7 +22,8 @@
   &__authorAvatar {
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 100%;
+    border-radius: 3px;
+    box-shadow: $shadow-0;
   }
 
   &-info {
@@ -39,6 +46,36 @@
     }
   }
 
+  &-control {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: white;    
+    border-radius: 3px;
+    overflow: hidden;
+    z-index: -1;
+    box-shadow: $shadow-1;
+    
+    &__select {
+      display: block;
+      position: relative;
+      padding: 0.4rem  0.6rem;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.8rem;
+      color: lighten($black, 10%);
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      &--delete {
+        color: red;
+      }
+    }
+  }
+
   &-body {
+
   }
 }
