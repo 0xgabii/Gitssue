@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 export default {
-  requestGithub({
-    baseURL,
+  requestRest({
     url,
     method = 'get',
     headers = {
@@ -13,7 +12,7 @@ export default {
   }) {
     return new Promise((resolve, reject) => {
       axios.request({
-        baseURL,
+        baseURL: 'https://api.github.com',
         url,
         method,
         headers,

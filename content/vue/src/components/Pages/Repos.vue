@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     requestRepos() {
-      utils.requestGithub({
+      utils.requestRest({
         url: 'https://api.github.com/user/repos',
         params: {
           access_token: this.token,
