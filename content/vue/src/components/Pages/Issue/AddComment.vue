@@ -1,5 +1,5 @@
 <template>
-  <div class="comment">
+  <div class="comment" v-if="viewer">
     <div class="column column--left">
       <img 
         class="comment__authorAvatar" 
@@ -23,7 +23,7 @@
 
         <button 
           v-if="info.viewerCanUpdate" 
-          @click="addComment">
+          @click="action">
           {{ actionText }}
         </button>
 
@@ -80,9 +80,12 @@ export default {
         data: {
           body: this.comment,
         },
+      }).then(() => {
+        this.comment = '';
+        this.$emit('update');
       });
     },
-    updateIssueState() {
+    updateIssueState(state) {
       const { owner, name, number } = this.$route.params;
 
       utils.requestRest({
@@ -92,9 +95,14 @@ export default {
           access_token: this.token,
         },
         data: {
-          // state:
+          state,
         },
-      });
+      }).then(() => this.$emit('update'));
+    },
+    action() {
+      if (this.comment) this.addComment();
+
+      this.updateIssueState(this.info.closed ? 'open' : 'closed');
     },
   },
   components: {
