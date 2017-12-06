@@ -89,9 +89,17 @@ export default {
       'token',
     ]),
   },
+  watch: {
+    'data.body': function () {
+      this.parseMarkdown();
+    },
+  },
   methods: {
     updateComment() {
       const { owner, name } = this.$route.params;
+
+      this.edit = false;
+      this.parseMarkdown(this.markdown.text);
 
       utils.requestRest({
         url: `/repos/${owner}/${name}/issues/comments/${this.data.databaseId}`,
@@ -102,7 +110,7 @@ export default {
         data: {
           body: this.markdown.text,
         },
-      });
+      }).then(() => this.$emit('update'));
     },
     deleteComment() {
       const { owner, name } = this.$route.params;
@@ -115,18 +123,21 @@ export default {
         params: {
           access_token: this.token,
         },
-      });
+      }).then(() => this.$emit('update'));
+    },
+    parseMarkdown(text = this.data.body) {
+      this.markdown.text = text;
+
+      setTimeout(() => {
+        marked(this.markdown.text, (err, html) => {
+          if (err) throw err;
+          this.markdown.html = html;
+        });
+      }, 0);
     },
   },
   created() {
-    this.markdown.text = this.data.body;
-
-    setTimeout(() => {
-      marked(this.markdown.text, (err, html) => {
-        if (err) throw err;
-        this.markdown.html = html;
-      });
-    }, 0);
+    this.parseMarkdown();
   },
   components: {
     Mditor,
