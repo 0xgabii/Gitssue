@@ -26,6 +26,13 @@
       <loading-spinner v-if="loading" />
       
       <div v-else class="timeline">
+        <div class="timeline-item">
+          <issue-main
+            :data="info"
+            @update="requestIssue"
+          />
+        </div>
+
         <div
           class="timeline-item"
           v-for="event in timeline"
@@ -33,13 +40,15 @@
           <component 
             :is="event.__typename" 
             :data="event"
+            @update="requestIssue"
           />
         </div>
 
         <div class="timeline-item">
           <add-comment
             :info="info"
-            :viewer="viewer" 
+            :viewer="viewer"
+            @update="requestIssue"
           />
         </div>
       </div>
@@ -74,17 +83,20 @@ export default {
     ]),
   },
   watch: {
-    $route() {
-      this.requestIssue();
+    $route: {
+      handler() {
+        this.info = {};
+        this.timeline = [];
+        this.loading = true;
+
+        this.requestIssue();
+      },
+      immediate: true,
     },
   },
   methods: {
     requestIssue() {
       const { owner, name, number } = this.$route.params;
-
-      this.info = {};
-      this.timeline = [];
-      this.loading = true;
 
       utils.request({
         token: this.token,
@@ -123,6 +135,7 @@ export default {
         }`,
       }).then(({ viewer, repository: { issue } }) => {
         this.info = {
+          ...issue,
           title: issue.title,
           labels: issue.labels ? issue.labels.nodes.map(node => ({
             id: node.id,
@@ -138,11 +151,6 @@ export default {
         this.viewer = {
           ...viewer,
         };
-
-        this.timeline.push({
-          __typename: 'IssueMain',
-          ...issue,
-        });
 
         this.loading = false;
 
@@ -195,14 +203,10 @@ export default {
         }`,
       }).then(({ repository: { issue } }) => {
         this.timeline = [
-          ...this.timeline,
           ...issue.timeline.nodes.filter(node => Object.keys(node).length > 1),
         ];
       });
     },
-  },
-  created() {
-    this.requestIssue();
   },
   components: {
     IssueMain,
