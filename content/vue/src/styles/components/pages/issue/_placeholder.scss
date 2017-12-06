@@ -1,0 +1,13 @@
+.placeholder {
+  position: relative;
+
+  &-message {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    line-height: 1.5;
+    font-size: 1.5rem;
+    text-align: center;
+    transform: translate(-50%, -50%);
+  }
+}

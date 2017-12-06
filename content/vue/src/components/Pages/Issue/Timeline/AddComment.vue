@@ -36,9 +36,9 @@
 <script>
 import { mapState } from 'vuex';
 
-import utils from '../../../helpers/utils';
+import utils from '../../../../helpers/utils';
 
-import Mditor from '../../Mditor';
+import Mditor from '../../../Mditor';
 
 export default {
   name: 'AddComment',

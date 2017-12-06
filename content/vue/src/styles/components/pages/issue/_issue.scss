@@ -1,0 +1,52 @@
+.issuePage {
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  .header {
+    display: flex;
+    align-items: center;
+
+    position: relative;
+    z-index: 1;
+    padding: 1rem;
+    box-shadow: $shadow-0;
+
+    .info {
+      flex: 1;
+
+      &__number {
+        color: rgba(255, 255, 255, 0.75);
+      }
+  
+      &__tag {
+        display: inline-block;
+        margin-right: 0.3rem;
+        margin-bottom: 0.5rem;
+        padding: 0.35rem;
+        border-radius: 3px;
+        font-size: 0.8rem;
+        box-shadow: $shadow-1;
+      }
+  
+      &__title {
+        font-size: 1.2rem;
+        line-height: 1.2;
+      }
+    }
+
+    .comments {
+      margin: 0 0.3rem;
+    }
+  }
+
+  .content {
+    flex: 1;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    @import 'timeline/all';  
+  }
+}

@@ -4,7 +4,6 @@ import VueRouter from 'vue-router';
 import Repos from '../components/Pages/Repos';
 import Issues from '../components/Pages/Issues';
 import Issue from '../components/Pages/Issue';
-import NewIssue from '../components/Pages/NewIssue';
 
 Vue.use(VueRouter);
 
@@ -22,7 +21,10 @@ export default new VueRouter({
         {
           path: '',
           name: 'Issues',
-          component: NewIssue,
+          component: Issue,
+          props: {
+            placeholder: true,
+          },
         },
         {
           path: ':number',

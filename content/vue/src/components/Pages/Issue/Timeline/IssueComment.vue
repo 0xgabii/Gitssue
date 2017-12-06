@@ -28,6 +28,12 @@
           @click="edit = true">
           Edit
         </span>
+        <span
+          v-if="data.viewerCanDelete"
+          class="comment-control__select comment-control__select--delete"
+          @click="deleteComment">
+          Delete
+        </span>
       </div>
 
       <div 
@@ -42,7 +48,7 @@
           <mditor v-model="markdown.text" />
 
           <button @click="edit = false">Cancel</button>
-          <button @click="updateIssue">Update issue #{{$route.params.number}}</button>
+          <button @click="updateComment">Update comment</button>
         
         </template>
       </div>
@@ -57,9 +63,9 @@ import hljs from 'highlight.js';
 
 import { mapState } from 'vuex';
 
-import Mditor from '../../Mditor';
+import Mditor from '../../../Mditor';
 
-import utils from '../../../helpers/utils';
+import utils from '../../../../helpers/utils';
 
 marked.setOptions({
   highlight: str => hljs.highlightAuto(str).value,
@@ -67,7 +73,7 @@ marked.setOptions({
 });
 
 export default {
-  name: 'IssueMain',
+  name: 'IssueComment',
   props: [
     'data',
   ],
@@ -89,20 +95,33 @@ export default {
     },
   },
   methods: {
-    updateIssue() {
-      const { owner, name, number } = this.$route.params;
+    updateComment() {
+      const { owner, name } = this.$route.params;
 
       this.edit = false;
       this.parseMarkdown(this.markdown.text);
 
       utils.requestRest({
-        url: `/repos/${owner}/${name}/issues/${number}`,
+        url: `/repos/${owner}/${name}/issues/comments/${this.data.databaseId}`,
         method: 'patch',
         params: {
           access_token: this.token,
         },
         data: {
           body: this.markdown.text,
+        },
+      }).then(() => this.$emit('update'));
+    },
+    deleteComment() {
+      const { owner, name } = this.$route.params;
+
+      if (!confirm('Are you sure you want to delete this comment?')) return;
+
+      utils.requestRest({
+        url: `/repos/${owner}/${name}/issues/comments/${this.data.databaseId}`,
+        method: 'delete',
+        params: {
+          access_token: this.token,
         },
       }).then(() => this.$emit('update'));
     },
