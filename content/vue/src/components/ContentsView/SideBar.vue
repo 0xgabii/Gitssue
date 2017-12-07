@@ -17,6 +17,7 @@
       v-for="repo in repos"
       class="circle repo"
       tag="div"
+      replace
       :key="repo.id"
       :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }">
 

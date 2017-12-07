@@ -9,6 +9,7 @@
           v-for="issue in issues"
           tag="div"
           class="issue"          
+          replace
           :class="`issue--${issue.state.toLowerCase()}`"
           :key="issue.id"
           :to="{ name: 'Issue', params: { number: issue.number } }">
