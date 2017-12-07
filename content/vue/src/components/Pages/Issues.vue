@@ -1,42 +1,65 @@
 <template>
-  <div class="issuesPage">
+  <div class="issuesWrapper">
 
-    <div class="issues" v-bar>
-
+    <div class="issuesPage" v-bar>
       <div>
 
-        <router-link 
-          v-for="issue in issues"
-          tag="div"
-          class="issue"          
-          replace
-          :class="`issue--${issue.state.toLowerCase()}`"
-          :key="issue.id"
-          :to="{ name: 'Issue', params: { number: issue.number } }">
+        <div class="control">
 
-          <span
-            v-for="label in issue.labels"
-            class="issue__tag"
-            :key="label.id"
-            :style="{ color: label.color, backgroundColor: label.bgColor }">
-            {{label.name}}
-          </span>
+          <input 
+            v-model="search"
+            class="control__search"
+            placeholder="Search all issues"
+            @keydown.enter="requestIssues"
+          />
+          
+          open / closed
 
-          <h3 class="issue__title">{{issue.title}}</h3>
+        </div>
 
-          <p class="issue-info">
-            <span>
-              {{issue.author}} - <relative-time :utc="issue.time" />
+        <div class="issues">
+
+          <router-link 
+            tag="div"
+            class="issue"          
+            replace
+            :to="{ name: 'NewIssue' }">
+            <h3 class="issue__title">Create new issue</h3>
+          </router-link>
+
+          <router-link 
+            v-for="issue in issues"
+            tag="div"
+            class="issue"          
+            replace
+            :class="`issue--${issue.state.toLowerCase()}`"
+            :key="issue.id"
+            :to="{ name: 'Issue', params: { number: issue.number } }">
+
+            <span
+              v-for="label in issue.labels"
+              class="issue__tag"
+              :key="label.id"
+              :style="{ color: label.color, backgroundColor: label.bgColor }">
+              {{label.name}}
             </span>
-            <span v-if="issue.comments">
-              <i class="ion-ios-chatboxes" />{{issue.comments}}
-            </span>
-          </p>
 
-        </router-link>
-        
-      </div>
+            <h3 class="issue__title">{{issue.title}}</h3>
 
+            <p class="issue-info">
+              <span>
+                {{issue.author}} - <relative-time :utc="issue.time" />
+              </span>
+              <span v-if="issue.comments">
+                <i class="ion-ios-chatboxes" />{{issue.comments}}
+              </span>
+            </p>
+
+          </router-link>
+          
+        </div>
+      
+      </div>      
     </div>
     
     <router-view class="router-view" />
@@ -52,6 +75,8 @@ import utils from '../../helpers/utils';
 export default {
   name: 'IssuesPage',
   data: () => ({
+    search: '',
+    states: 'open',
     issues: [],
     loading: false,
   }),
@@ -61,20 +86,23 @@ export default {
     ]),
   },
   watch: {
-    $route() {
-      this.requestIssues();
+    $route(to) {
+      if (!to.params.number) this.requestIssues();
     },
   },
   methods: {
     requestIssues() {
       const { owner, name } = this.$route.params;
 
+      const info = `is:issue repo:${owner}/${name}`;
+      const states = `${this.states ? `is:${this.states}` : ''}`;
+
       utils.request({
         token: this.token,
         query: `{
-          repository(owner: "${owner}" name: "${name}") {
-            issues(first: 10 orderBy: {field: CREATED_AT, direction: DESC}) {
-              nodes {
+          search(first:20 type:ISSUE query:"${this.search} ${states} ${info}") {
+            nodes {
+              ... on Issue {
                 id
                 number
                 title
@@ -96,9 +124,16 @@ export default {
               }
             }
           }
+          openIssues: search(type:ISSUE query:"${this.search} is:open ${info}") {
+            issueCount
+          }
+          closedIssues: search(type:ISSUE query:"${this.search} is:closed ${info}") {
+            issueCount
+          }
         }`,
-      }).then(({ repository }) => {
-        this.issues = repository.issues.nodes.map(({
+      }).then(({ search, openIssues, closedIssues }) => {
+        console.log(openIssues, closedIssues);
+        this.issues = search.nodes.map(({
           id,
           number,
           title,
