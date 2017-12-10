@@ -1,74 +1,74 @@
 <template>
   <div class="issuesWrapper">
 
-    <div class="issuesPage" v-bar>
-      <div>
+    <infinite-scroll 
+      class="issuesPage"
+      @bottom="requestMoreIssues">
 
-        <div class="control">
-          <input
-            class="control__search"
-            placeholder="Search all issues"
-            :value="search"
-            @keydown.enter="handleSearch"
-          />
+      <div class="control">
+        <input
+          class="control__search"
+          placeholder="Search all issues"
+          :value="search"
+          @keydown.enter="handleSearch"
+        />
 
-          <div class="control-states">
-            <span
-              v-for="item in states"
-              :class="`
-                control-states__select
-                control-states__select--${item}
-                ${item === state && 'control-states__select--active'}
-              `"
-              :key="item"
-              @click="changeState(item)">
-              {{issues[item]}} {{item}}
-            </span>
-          </div>
+        <div class="control-states">
+          <span
+            v-for="item in states"
+            :class="`
+              control-states__select
+              control-states__select--${item}
+              ${item === state && 'control-states__select--active'}
+            `"
+            :key="item"
+            @click="changeState(item)">
+            {{issues[item]}} {{item}}
+          </span>
         </div>
+      </div>
 
-        <div class="issues">
-          <router-link 
-            tag="div"
-            class="issue"          
-            replace
-            :to="{ name: 'NewIssue' }">
-            <h3 class="issue__title">Create new issue</h3>
-          </router-link>
+      <div class="issues">
+        <router-link 
+          tag="div"
+          class="issue"          
+          replace
+          :to="{ name: 'NewIssue' }">
+          <h3 class="issue__title">Create new issue</h3>
+        </router-link>
 
-          <router-link 
-            v-for="issue in issues.list"
-            tag="div"
-            class="issue"          
-            replace
-            :class="`issue--${issue.state.toLowerCase()}`"
-            :key="issue.id"
-            :to="{ name: 'Issue', params: { number: issue.number } }">
+        <router-link 
+          v-for="issue in issues.list"
+          tag="div"
+          class="issue"          
+          replace
+          :class="`issue--${issue.state.toLowerCase()}`"
+          :key="issue.id"
+          :to="{ name: 'Issue', params: { number: issue.number } }">
 
-            <span
-              v-for="label in issue.labels"
-              class="issue__tag"
-              :key="label.id"
-              :style="{ color: label.color, backgroundColor: label.bgColor }">
-              {{label.name}}
+          <span
+            v-for="label in issue.labels"
+            class="issue__tag"
+            :key="label.id"
+            :style="{ color: label.color, backgroundColor: label.bgColor }">
+            {{label.name}}
+          </span>
+
+          <h3 class="issue__title">{{issue.title}}</h3>
+
+          <p class="issue-info">
+            <span>
+              {{issue.author}} - <relative-time :utc="issue.time" />
             </span>
+            <span v-if="issue.comments">
+              <i class="ion-ios-chatboxes" />{{issue.comments}}
+            </span>
+          </p>
 
-            <h3 class="issue__title">{{issue.title}}</h3>
-
-            <p class="issue-info">
-              <span>
-                {{issue.author}} - <relative-time :utc="issue.time" />
-              </span>
-              <span v-if="issue.comments">
-                <i class="ion-ios-chatboxes" />{{issue.comments}}
-              </span>
-            </p>
-
-          </router-link>
-        </div>
-          
-      </div>      
-    </div>
+        </router-link>
+      </div>
+ 
+    </infinite-scroll>
     
     <router-view class="router-view" />
 
@@ -94,6 +94,7 @@ export default {
     issues: {
       open: 0,
       closed: 0,
+      pageInfo: {},
       list: [],
     },
 
@@ -130,9 +131,10 @@ export default {
       }
 
       this.state = state;
+
       this.requestIssues();
     },
-    requestIssues() {
+    requestIssues(appendList = [], pagingOption = '') {
       const { owner, name } = this.$route.params;
 
       const info = `is:issue repo:${owner}/${name}`;
@@ -140,7 +142,11 @@ export default {
       utils.request({
         token: this.token,
         query: `{
-          search(first:20 type:ISSUE query:"${this.search} ${info}") {
+          search(first:20 type:ISSUE ${pagingOption} query:"${this.search} ${info}") {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             nodes {
               ... on Issue {
                 id
@@ -175,32 +181,43 @@ export default {
         this.issues = {
           open: openIssues.issueCount,
           closed: closedIssues.issueCount,
-          list: search.nodes.map(({
-            id,
-            number,
-            title,
-            author,
-            labels,
-            state,
-            createdAt,
-            comments,
-          }) => ({
-            id,
-            number,
-            title,
-            author: author.login,
-            labels: labels ? labels.nodes.map(node => ({
-              id: node.id,
-              name: node.name,
-              color: parseInt('ffffff', 16) / 2 > parseInt(node.color, 16) ? '#fff' : '#000',
-              bgColor: `#${node.color}`,
-            })) : [],
-            state,
-            time: createdAt,
-            comments: comments.totalCount,
-          })),
+          pageInfo: search.pageInfo,
+          list: [
+            ...appendList,
+            ...search.nodes.map(({
+              id,
+              number,
+              title,
+              author,
+              labels,
+              state,
+              createdAt,
+              comments,
+            }) => ({
+              id,
+              number,
+              title,
+              author: author.login,
+              labels: labels ? labels.nodes.map(node => ({
+                id: node.id,
+                name: node.name,
+                color: parseInt('ffffff', 16) / 2 > parseInt(node.color, 16) ? '#fff' : '#000',
+                bgColor: `#${node.color}`,
+              })) : [],
+              state,
+              time: createdAt,
+              comments: comments.totalCount,
+            })),
+          ],
         };
       });
+    },
+    requestMoreIssues() {
+      const { hasNextPage, endCursor } = this.issues.pageInfo;
+
+      if (hasNextPage) {
+        this.requestIssues(this.issues.list, `after: "${endCursor}"`);
+      }
     },
   },
   created() {
