@@ -5,25 +5,31 @@
       class="issuesPage"
       @bottom="requestMoreIssues">
 
-      <div class="control">
+      <div class="query">
         <input
-          class="control__search"
+          class="query__search"
           placeholder="Search all issues"
           :value="search"
           @keydown.enter="handleSearch"
         />
 
-        <div class="control-states">
+        <div class="query-control">
           <span
             v-for="item in states"
             :class="`
-              control-states__select
-              control-states__select--${item}
-              ${item === state && 'control-states__select--active'}
+              query-control__state
+              query-control__state--${item}
+              ${item === state && 'query-control__state--active'}
             `"
             :key="item"
             @click="changeState(item)">
             {{issues[item]}} {{item}}
+          </span>
+
+          <span
+            class="query-control__refresh"
+            @click="requestIssues()">
+            <i class="ion-refresh" />
           </span>
         </div>
       </div>
@@ -37,7 +43,10 @@
           <h3 class="issue__title">Create new issue</h3>
         </router-link>
 
-        <router-link 
+        <loading-spinner v-if="loading" />
+
+        <router-link
+          v-else
           v-for="issue in issues.list"
           tag="div"
           class="issue"          
@@ -66,6 +75,9 @@
           </p>
 
         </router-link>
+
+        <loading-spinner v-if="fetching" />
+
       </div>
  
     </infinite-scroll>
@@ -92,13 +104,14 @@ export default {
     state: 'open',
 
     issues: {
-      open: 0,
-      closed: 0,
+      open: null,
+      closed: null,
       pageInfo: {},
       list: [],
     },
 
     loading: false,
+    fetching: false,
   }),
   computed: {
     ...mapState('auth', [
@@ -139,6 +152,12 @@ export default {
 
       const info = `is:issue repo:${owner}/${name}`;
 
+      if (appendList.length) {
+        this.fetching = true;
+      } else {
+        this.loading = true;
+      }
+
       utils.request({
         token: this.token,
         query: `{
@@ -178,6 +197,12 @@ export default {
           }
         }`,
       }).then(({ search, openIssues, closedIssues }) => {
+        if (appendList.length) {
+          this.fetching = false;
+        } else {
+          this.loading = false;
+        }
+
         this.issues = {
           open: openIssues.issueCount,
           closed: closedIssues.issueCount,
