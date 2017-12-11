@@ -65,7 +65,6 @@
     display: block;
     padding: 0.5rem 0.7rem;
     width: 100%;
-    min-height: 5rem;
     background-color: transparent;
     border: none;
     outline: none;
@@ -75,7 +74,7 @@
     font-size: 14px;
     color: white;
     caret-color: white;
-    overflow: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
 
     &::placeholder {
@@ -85,7 +84,7 @@
 
   &__preview {
     padding: 0.5rem 0.7rem;
-    min-height: 5rem;
+    overflow-y: auto;
   }
 
   &-footer {

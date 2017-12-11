@@ -21,25 +21,26 @@
           <i class="ion-camera" /> Capture
         </button>
 
-
       </div>
     </div>
 
     <textarea 
       v-if="mode === 'write'"
-      class="mditor__textArea"
+      class="mditor__textArea custom-scroll"
       ref='textarea'
       spellcheck="false"
       :value="value"
       :placeholder="placeholder"
+      :style="overflow"
       @input="handleInput"
       @keydown.tab.prevent="indentText">
     </textarea>
 
     <div 
       v-else
-      class="mditor__preview markdown-preview" 
       v-html="parsedText"      
+      class="mditor__preview markdown-preview custom-scroll"       
+      :style="overflow"
     />
 
     <capture-modal 
@@ -72,6 +73,14 @@ export default {
       type: String,
       default: 'Write your contents',
     },
+    minHeight: {
+      type: Number,
+      default: 100,
+    },
+    maxHeight: {
+      type: Number,
+      default: 450,
+    },
   },
   data: () => ({
     tabs: ['write', 'preview'],
@@ -84,6 +93,12 @@ export default {
   computed: {
     parsedText() {
       return marked(this.value) || 'No contents for preview';
+    },
+    overflow() {
+      return {
+        minHeight: `${this.minHeight}px`,
+        maxHeight: `${this.maxHeight}px`,
+      };
     },
   },
   watch: {
