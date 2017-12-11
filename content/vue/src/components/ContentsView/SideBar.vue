@@ -12,12 +12,12 @@
       />
     </router-link>
 
-
     <router-link 
       v-for="repo in repos"
       class="circle repo"
       tag="div"
       replace
+      v-tooltip.right="repo.nameWithOwner"
       :key="repo.id"
       :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }">
 
@@ -88,26 +88,34 @@ export default {
       this.request(`{ 
         viewer {
           repositories(first: 5) {
-            edges {
-              node {
-                id,
-                name,
-                owner {
-                  login
-                },
-                issues(states: OPEN) {
-                  totalCount
-                }
+            nodes {
+              id
+              name
+              nameWithOwner
+              owner {
+                login
               }
+              issues(states: OPEN) {
+                totalCount
+              }
+              viewerCanAdminister
             }
           }
         }
       }`).then(({ viewer }) => {
-        this.repos = viewer.repositories.edges.map(({ node }) => ({
-          id: node.id,
-          name: node.name,
-          owner: node.owner.login,
-          open_issues: node.issues.totalCount,
+        this.repos = viewer.repositories.nodes.map(({
+          id,
+          name,
+          nameWithOwner,
+          owner,
+          issues,
+          viewerCanAdminister,
+        }) => ({
+          id,
+          name,
+          nameWithOwner: viewerCanAdminister ? name : nameWithOwner,
+          owner: owner.login,
+          open_issues: issues.totalCount,
         }));
       });
     },

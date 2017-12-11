@@ -1,6 +1,6 @@
 import Vuebar from 'vuebar';
 import VueScrollTo from 'vue-scrollto';
-import ToggleButton from 'vue-js-toggle-button';
+import VTooltip from 'v-tooltip';
 
 import Modal from '../components/Common/Modals/Layout';
 import InfiniteScroll from '../components/Common/InfiniteScroll';
@@ -9,7 +9,7 @@ import RelativeTime from '../components/Common/RelativeTime';
 
 const install = (Vue) => {
   Vue.use(VueScrollTo);
-  Vue.use(ToggleButton);
+  Vue.use(VTooltip);
   Vue.use(Vuebar);
 
   Vue.component('modal', Modal);
