@@ -1,0 +1,49 @@
+.newIssue {
+  padding: 2rem;
+
+  input {
+    margin-bottom: 1rem;
+    padding: 0.7rem 0.5rem;
+    width: 100%;
+    background-color: lighten($black, 17%);
+    border: 3px solid lighten($black, 3%);
+    border-radius: 0.3rem;
+    outline: none;
+    font-size: 0.9rem;
+    caret-color: white;       
+    color: white; 
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+
+  &-control {
+    margin-top: 1rem;
+    text-align: center;
+
+    &__button {
+      padding: 0.7rem 1rem;
+      background-color: $black;
+      color: white;
+      cursor: pointer;
+      border: none;
+      border-radius: 3px;
+      outline: none;
+      font-size: 0.9rem;
+      font-weight: bold;
+      box-shadow: $shadow-0;
+      transition: all 0.2s;
+
+      &:hover {
+        box-shadow: $shadow-1;
+      }
+
+      &--disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+    }
+  }
+}
