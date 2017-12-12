@@ -1,13 +1,60 @@
 .placeholder {
   position: relative;
 
-  &-message {
+  .center {
     position: absolute;
     left: 50%;
-    top: 50%;
-    line-height: 1.5;
-    font-size: 1.5rem;
+    top: 45%;
+    width: 100%;
     text-align: center;
     transform: translate(-50%, -50%);
+  }
+
+  &__icon {
+    display: block;
+    margin-bottom: -1rem;
+    font-size: 8rem;
+  }
+
+  &__message {
+    margin: 1.5rem 0;    
+    font-size: 1.2rem;
+  }
+
+  &__divider {
+    position: relative;
+    margin: 2rem auto;
+    width: 47%;
+    height: 1px;
+    opacity: 0.75;
+    background-color: white;
+    
+    &:after {
+      content: 'OR';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 3rem;
+      font-size: 0.8rem;
+      background-color: lighten($black, 11%);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &__button {
+    padding: 0.7rem 1rem;
+    background-color: $black;
+    color: white;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+    font-size: 0.9rem;
+    box-shadow: $shadow-0;
+    transition: all 0.2s;
+
+    &:hover {
+      box-shadow: $shadow-1;
+    }
   }
 }
