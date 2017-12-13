@@ -24,6 +24,7 @@
         "content/message.js",        
         "content/auth.js",
         "content/ui.js",
+        "content/repos.js",
         "content/capture/index.js",
         "content/capture/lib/cropper.min.js"        
       ]

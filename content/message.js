@@ -7,5 +7,6 @@ const message = {
     auth: ({ type }) => auth[type](),
     ui: ({ type, value }) => ui[type](value),
     capture: ({ type, value }) => capture[type](value),
+    repos: ({ type, value }) => repos[type](value),
   },
 };

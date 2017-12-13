@@ -2,6 +2,7 @@
   <div class="contentsView-sidebar">
     
     <router-link 
+      v-tooltip.right="`${user.name} | ${user.login}`"
       class="circle user"
       tag="div"
       to="lol">
@@ -17,7 +18,7 @@
       class="circle repo"
       tag="div"
       replace
-      v-tooltip.right="repo.nameWithOwner"
+      v-tooltip.right="`${repo.owner}/${repo.name}`"
       :key="repo.id"
       :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }">
 
@@ -31,26 +32,39 @@
 
     </router-link>
   
-    <div class="circle repo repo--plus">
+    <div class="circle repo repo--plus" @click="modals.repos = true">
       <i class="ion-ios-plus-empty" />
     </div>
+
+    <repos-modal 
+      v-if="modals.repos" 
+      @close="modals.repos = false" 
+    />
 
   </div>
 </template>
 
 <script>
-import axios from 'axios';
 import { mapState } from 'vuex';
+
+import utils from '../../helpers/utils';
+
+import ReposModal from '../Common/Modals/Repos';
 
 export default {
   name: 'ContentsViewSideBar',
   data: () => ({
     user: {
+      login: '',
       name: '',
       avatarUrl: '',
     },
 
     repos: [],
+
+    modals: {
+      repos: false,
+    },
   }),
   computed: {
     ...mapState('auth', [
@@ -58,71 +72,36 @@ export default {
     ]),
   },
   methods: {
-    request(query) {
-      return new Promise((resolve) => {
-        axios.post('https://api.github.com/graphql', {
-          query,
-        }, {
-          headers: {
-            Authorization: `bearer ${this.token}`,
-          },
-        }).then((res) => {
-          resolve(res.data.data);
-        });
-      });
-    },
     getUser() {
-      this.request(`{
-        viewer {
-          name,
-          avatarUrl
-        }
-      }`).then(({ viewer }) => {
-        this.user = {
-          ...this.user,
-          ...viewer,
-        };
-      });
+      utils.request({
+        token: this.token,
+        query: `{
+          viewer {
+            login
+            name
+            avatarUrl
+          }
+        }` }).then(({ viewer }) => {
+          this.user = {
+            ...this.user,
+            ...viewer,
+          };
+        });
     },
     getRepos() {
-      this.request(`{ 
-        viewer {
-          repositories(first: 5) {
-            nodes {
-              id
-              name
-              nameWithOwner
-              owner {
-                login
-              }
-              issues(states: OPEN) {
-                totalCount
-              }
-              viewerCanAdminister
-            }
-          }
-        }
-      }`).then(({ viewer }) => {
-        this.repos = viewer.repositories.nodes.map(({
-          id,
-          name,
-          nameWithOwner,
-          owner,
-          issues,
-          viewerCanAdminister,
-        }) => ({
-          id,
-          name,
-          nameWithOwner: viewerCanAdminister ? name : nameWithOwner,
-          owner: owner.login,
-          open_issues: issues.totalCount,
-        }));
-      });
+      utils.message('repos', { type: 'init' });
     },
   },
   created() {
     this.getUser();
     this.getRepos();
+
+    window.addEventListener('message', ({ data: { port, msg } }) => {
+      if (port === 'repos') this.repos = msg;
+    });
+  },
+  components: {
+    ReposModal,
   },
 };
 </script>

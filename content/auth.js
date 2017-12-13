@@ -11,6 +11,7 @@ const auth = {
   },
   observe() {
     chrome.storage.onChanged.addListener((changes) => {
+      if (!changes.token) return;
       const token = changes.token.newValue;
       message.send('auth', { token });
     });

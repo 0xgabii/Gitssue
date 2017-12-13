@@ -8,11 +8,13 @@
     height: 3rem;
     background-color: lighten($black, 8%);
     color: white;    
-
-    cursor: pointer;
+    cursor: pointer;    
+    box-shadow: $shadow-0;        
   }
 
   .user {
+    border-radius: 3px;
+    overflow: hidden;
 
     &__profile {
       display: block;
@@ -24,7 +26,6 @@
   .repo {
     margin: 0.75rem 0;
     border-radius: 100%;
-    box-shadow: $shadow-0;
     transition: all 0.3s;
 
     &:hover:not(.repo--plus) {
