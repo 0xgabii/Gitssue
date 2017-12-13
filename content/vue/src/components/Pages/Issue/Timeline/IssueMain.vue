@@ -41,9 +41,15 @@
 
           <mditor v-model="markdown.text" />
 
-          <button @click="edit = false">Cancel</button>
-          <button @click="updateIssue">Update issue #{{$route.params.number}}</button>
-        
+          <div class="comment-actions">
+            <button 
+              class="comment-actions__button comment-actions__button--cancel"
+              @click="edit = false">Cancel</button>
+            <button 
+              class="comment-actions__button"
+              @click="updateIssue">Update issue #{{$route.params.number}}</button>
+          </div>
+
         </template>
       </div>
 

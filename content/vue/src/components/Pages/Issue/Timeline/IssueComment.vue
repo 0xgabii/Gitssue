@@ -47,8 +47,14 @@
 
           <mditor v-model="markdown.text" />
 
-          <button @click="edit = false">Cancel</button>
-          <button @click="updateComment">Update comment</button>
+          <div class="comment-actions">
+            <button 
+              class="comment-actions__button comment-actions__button--cancel"
+              @click="edit = false">Cancel</button>
+            <button 
+              class="comment-actions__button"
+              @click="updateComment">Update comment</button>
+          </div>
         
         </template>
       </div>

@@ -78,4 +78,59 @@
   &-body {
 
   }
+
+  &-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 1rem;
+    padding: 0 0 0.3rem;
+
+    &__button {
+      margin: 0 0.3rem;
+      padding: 0.5rem 0.8rem;
+      background-color: $black;
+      color: white;
+      cursor: pointer;
+      border: none;
+      border-radius: 3px;
+      outline: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: $shadow-0;
+      transition: all 0.2s;
+  
+      &:hover {
+        box-shadow: $shadow-1;
+      }
+
+      &--disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      &--cancel {
+        background-color: transparent;
+        box-shadow: none;
+
+        &:hover {
+          box-shadow: none;
+          background-color: lighten($black, 5%);
+        }
+      }
+
+      &--close,
+      &--reopen {
+        margin-right: auto;
+      }
+
+      &--close {
+        background-color: red;
+      }
+
+      &--reopen {
+        background-color: $blue;
+      }
+    }
+  }
 }

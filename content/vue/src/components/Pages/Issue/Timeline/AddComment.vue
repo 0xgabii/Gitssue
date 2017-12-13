@@ -16,18 +16,36 @@
 
       <div 
         class="comment-body">
+
         <mditor 
           v-model="comment"
           :placeholder="`Add comment for issue #${this.$route.params.number}`"
         />
 
-        <button 
-          v-if="info.viewerCanUpdate" 
-          @click="action">
-          {{ actionText }}
-        </button>
+        <div class="comment-actions">
 
-        <button @click="addComment">Comment</button>
+          <button 
+            v-if="info.viewerCanUpdate"
+            :class="`
+              comment-actions__button 
+              comment-actions__button--${info.closed ? 'reopen' : 'close'}
+              ${loading.state ? 'comment-actions__button--disabled' : ''}
+            `"
+            @click="action">
+            {{ actionText }}
+          </button>
+
+          <button 
+            :class="`
+              comment-actions__button 
+              ${!comment.length ? 'comment-actions__button--disabled' : ''}
+            `"
+            @click="addComment">
+            {{ loading.comment ? 'Sending comment...' : 'Comment' }}
+          </button>
+          
+        </div>
+
       </div>
     </div>
   </div>
@@ -54,6 +72,10 @@ export default {
   },
   data: () => ({
     comment: '',
+    loading: {
+      comment: false,
+      state: false,
+    },
   }),
   computed: {
     ...mapState('auth', [
@@ -71,6 +93,10 @@ export default {
     addComment() {
       const { owner, name, number } = this.$route.params;
 
+      if (!this.comment.length || this.loading.comment) return;
+
+      this.loading.comment = true;
+
       utils.requestRest({
         url: `/repos/${owner}/${name}/issues/${number}/comments`,
         method: 'post',
@@ -81,12 +107,17 @@ export default {
           body: this.comment,
         },
       }).then(() => {
+        this.loading.comment = false;
         this.comment = '';
         this.$emit('update');
       });
     },
     updateIssueState(state) {
       const { owner, name, number } = this.$route.params;
+
+      if (this.loading.state) return;
+
+      this.loading.state = true;
 
       utils.requestRest({
         url: `/repos/${owner}/${name}/issues/${number}`,
@@ -97,7 +128,10 @@ export default {
         data: {
           state,
         },
-      }).then(() => this.$emit('update'));
+      }).then(() => {
+        this.loading.state = false;
+        this.$emit('update');
+      });
     },
     action() {
       if (this.comment) this.addComment();
