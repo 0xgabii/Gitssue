@@ -21,7 +21,7 @@ export default {
     title: String,
   },
   mounted() {
-    // document.body.appendChild(this.$refs.modal);
+    document.querySelector('#app > div').appendChild(this.$refs.modal);
   },
 };
 </script>
