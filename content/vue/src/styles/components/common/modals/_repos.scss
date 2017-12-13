@@ -1,0 +1,48 @@
+.repo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: relative;
+  margin: 0.5rem 0;
+  padding: 1rem;
+  width: 18rem;
+  border-radius: 3px;
+  background-color: white;  
+  color: $black;
+  cursor: pointer;
+  box-shadow: $shadow-0;
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: $shadow-1;
+  }
+
+  &-info {
+    flex: 1;
+  }
+
+  &__name {
+    margin-bottom: 0.1rem;
+    line-height: 1.2;
+  }
+
+  &__description {
+    font-size: 0.8rem;
+    line-height: 1.2;
+    color: rgba(0, 0, 0, 0.7);
+  }
+
+  &__issue {
+    position: absolute;
+    right: 0;
+    top: 0;
+    
+    padding: 0.3rem 0.35rem 0.4rem 0.45rem;
+    border-bottom-left-radius: 1rem;
+    font-size: 0.8rem;
+    background-color: $blue;
+    color: white;
+    box-shadow: $shadow-0;
+  }
+}

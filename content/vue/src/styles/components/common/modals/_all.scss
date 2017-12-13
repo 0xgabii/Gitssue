@@ -46,4 +46,8 @@
   &-footer {
 
   }
+
+  &.reposModal {
+    @import 'repos';
+  }
 }
