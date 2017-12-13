@@ -6,12 +6,6 @@
       @bottom="requestMoreIssues">
 
       <div class="query">
-        <input
-          class="query__search"
-          placeholder="Search all issues"
-          :value="search"
-          @keydown.enter="handleSearch"
-        />
 
         <div class="query-control">
           <span
@@ -32,6 +26,14 @@
             <i class="ion-refresh" />
           </span>
         </div>
+
+        <input
+          class="query__search"
+          placeholder="Search all issues"
+          :value="search"
+          @keydown.enter="handleSearch"
+        />
+        
       </div>
 
       <div class="issues">
