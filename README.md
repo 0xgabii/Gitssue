@@ -6,24 +6,24 @@ Manage your github issue by chrome extension
 
 - Github API: 
   - ~~REST~~
-  - GraphQL
+  - ~~GraphQL~~
 - ~~Github login~~
 - Manage issue
-  - CRUD
+  - ~~CRUD~~
   - Notification by desktop message, if user want
 - UI
   - Customizable position & resizing by user
   - Synchronize ui when page load, refresh, move tab, etc.
-  - ~~iOS like tab bar [example](https://dribbble.com/shots/3592462-iOS-Tab)~~
   - Discord, Slack UI
+  - Tab design when viewing multiple issue (like 'vscode')
 - Editor like notepad
     - ~~tab, shift + tab for indent/unindent~~
-    - ctrl + z, ctrl + y for undo/redo
     - ~~Capture~~
       - ~~visible part & full-page~~
       - ~~select & crop~~
       - ~~upload google drive & get response~~
       - ~~text/image blurry (because of canvas bug?)~~
+    - ctrl + z, ctrl + y for undo/redo      
     - autosave
     - line number support?
       
