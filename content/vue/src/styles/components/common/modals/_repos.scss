@@ -1,48 +1,197 @@
-.repo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.modal {
 
-  position: relative;
-  margin: 0.5rem 0;
-  padding: 1rem;
-  width: 18rem;
-  border-radius: 3px;
-  background-color: white;  
-  color: $black;
-  cursor: pointer;
-  box-shadow: $shadow-0;
-  transition: all 0.2s;
-
-  &:hover {
-    box-shadow: $shadow-1;
+  &-wrapper {
+    width: 25rem;
   }
 
-  &-info {
+  &-header {
+    position: relative;
+    z-index: 1;
+    padding: 0.7rem;
+    background-color: lighten($black, 8%);
+    box-shadow: 0 5px 5px -3px $black;
+    transform: translateZ(0);
+  }
+
+  &-body {
+    background-color: lighten($black, 7%);
+    height: 20rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+  
+    &::-webkit-scrollbar {
+      width: 10px;
+      background-color: transparent;
+    }
+  
+    &::-webkit-scrollbar-track,
+    &::-webkit-scrollbar-thumb {
+      border: 2px solid rgba(255, 255, 255, 0);
+      border-radius: 1rem;
+      background-clip: padding-box;
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: lighten($black, 7%);
+    }
+  
+    &::-webkit-scrollbar-thumb {
+      background-color: $black;
+    }
+  }
+
+  &-footer {
+    padding: 0.7rem;
+    background-color: lighten($black, 3%);    
+  }
+}
+
+.title {
+  padding: 0.5rem;
+  margin-bottom: 0.7rem;
+  font-size: 1.2rem;
+}
+
+.tagsinput {
+  display: flex;
+  flex-wrap: wrap;
+
+  position: relative;
+  padding: 0.4rem 0.4rem 0 0.4rem;
+  background-color: $black;
+  border-radius: 3px;
+  line-height: 1.5;
+
+  &__tag {
+    display: inline-flex;
+    align-items: center;
+
+    margin-right: 0.3rem;
+    margin-bottom: 0.4rem;
+    padding: 0rem 0.4rem;
+    background-color: lighten($black, 8%);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: $shadow-0;
+
+    &:hover i {
+      color: white;
+    }
+
+    i {
+      margin-left: 0.2rem;
+      padding: 0.3rem;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.7);
+      pointer-events: none;
+    }
+  }
+
+  &__field {
     flex: 1;
+
+    margin-bottom: 0.4rem;
+    padding: 0.3rem;
+    width: 0px;    
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    caret-color: white;
+    font-size: 0.9rem;
+    font-weight: normal;
+  }
+
+  &__placeholder {
+    position: absolute;
+    left: 0.7rem;
+    top: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+}
+
+.repo {
+  position: relative;
+  padding: 1rem;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten($black, 4%);    
   }
 
   &__name {
-    margin-bottom: 0.1rem;
-    line-height: 1.2;
+    
   }
 
   &__description {
+    padding-top: 0.4rem;
     font-size: 0.8rem;
-    line-height: 1.2;
-    color: rgba(0, 0, 0, 0.7);
+    width: 20rem;
+    color: rgba(255, 255, 255, 0.7);
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap; 
   }
 
-  &__issue {
+  &__issues {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 3px;
+    top: 50%;
     
-    padding: 0.3rem 0.35rem 0.4rem 0.45rem;
-    border-bottom-left-radius: 1rem;
-    font-size: 0.8rem;
-    background-color: $blue;
+    padding: 0.3rem 0.35rem;
+    background-color: $blue;    
+    border-radius: 1rem;
     color: white;
+    font-size: 0.8rem;    
     box-shadow: $shadow-0;
+    transform: translateY(-50%);
+  }
+
+  &__blocked {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    user-select: none;
+
+    &:after {
+      content: '🔒 In this repository, issues locked';
+      
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      white-space: nowrap;
+      color: white;
+      transform: translate(-50%, -50%);
+    }
+  }
+}
+
+.submit {
+  padding: 0.75rem;
+  width: 100%;
+  background-color: $blue;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: white;
+  font-size: 0.9rem;
+  box-shadow: $shadow-0;
+  transition: all 0.2s;
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:hover {
+    box-shadow: $shadow-1;
   }
 }
