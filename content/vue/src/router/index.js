@@ -16,7 +16,7 @@ export default new VueRouter({
       component: Repos,
     },
     {
-      path: ':owner/:name/issues',
+      path: '/:owner/:name/issues',
       component: Issues,
       children: [
         {
