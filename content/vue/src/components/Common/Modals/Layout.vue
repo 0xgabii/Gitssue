@@ -2,13 +2,17 @@
   <div class="modal" ref="modal">
     <div class="modal__backdrop" @click="$emit('close')" />
     <div class="modal-wrapper">
+      
       <div class="modal-header">
-        <h3 class="modal-header__title">{{title}}</h3>        
+        <slot name="header" />
       </div>
+
       <div class="modal-body">
-        <slot />
+        <slot name="body" />
       </div>
+
       <div class="modal-footer">
+        <slot name="footer" />
       </div>
     </div>
   </div>
