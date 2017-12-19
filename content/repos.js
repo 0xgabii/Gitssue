@@ -14,10 +14,10 @@ const repos = {
       message.send('repos', changes.list.newValue);
     });
   },
-  addRepo(repo) {
+  addRepo(repos) {
     chrome.storage.sync.get('list', (results) => {
       const list = results.list || [];
-      chrome.storage.sync.set({ list: [...list, repo] });
+      chrome.storage.sync.set({ list: [...list, ...repos] });
     });
   },
   removeRepo(index) {
