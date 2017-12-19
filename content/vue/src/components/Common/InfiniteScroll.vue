@@ -1,14 +1,24 @@
 <template>
-  <div v-bar>
+  <div v-if="virtualScroll" v-bar>
     <div ref="scroll">
       <slot />
     </div> 
+  </div>
+
+  <div v-else ref="scroll">
+    <slot />
   </div>
 </template>
 
 <script>
 export default {
   name: 'InfiniteScroll',
+  props: {
+    virtualScroll: {
+      type: Boolean,
+      default: true,
+    },
+  },
   methods: {
     handleScroll(e) {
       const { clientHeight, scrollTop, scrollHeight } = e.target;
