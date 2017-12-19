@@ -1,12 +1,12 @@
 <template>
-  <modal-layout 
-    class="reposModal" 
+  <modal 
+    class="reposModal"
     @close="$emit('close')">
 
     <template slot="header">
       
       <h3 class="title">
-        Select repos want to manage issue
+        Search & Select repositories
       </h3>
 
       <div class="tagsinput">
@@ -23,40 +23,72 @@
           class="tagsinput__field"        
           :value="search"
           @keydown.delete="cancelSelectByInput"
+          @keydown.enter="requestRepos"
           @input="(e) => search = e.target.value"
         />
 
         <div 
-          v-if="!select.length && !search.length"
+          v-if="!select.length && !search"
           class="tagsinput__placeholder">
           Please enter repository name
         </div>
+
       </div>
+
     </template>
 
     <template slot="body">
-
+      
       <div
-        v-for="repo in repos"
-        class="repo"
-        :key="repo.id"
-        @click="() => repo.hasIssuesEnabled && handleSelectRepo(repo)">
-
-        <h3 class="repo__name">
-          {{repo.owner}}/{{repo.name}}
-        </h3>
-
-        <p class="repo__description">
-          {{repo.description}}
-        </p>
-
-        <span v-if="repo.open_issues" class="repo__issues">
-          {{repo.open_issues}}
-        </span>
-
-        <div v-if="!repo.hasIssuesEnabled" class="repo__blocked" />
-
+        :class="`
+          message
+          ${message.active && 'message--active'}
+        `"
+        @click="message.active = false">
+        {{message.content}} <i class="ion-close-round" />
       </div>
+
+      <infinite-scroll
+        class="repos"
+        :virtual-scroll="false"
+        @bottom="requestMoreRepos">
+
+        <loading-spinner v-if="loading" />
+
+        <div
+          v-else
+          v-for="repo in repos.list"
+          class="repo"
+          :key="repo.id"
+          @click="() => repo.hasIssuesEnabled && handleSelectRepo(repo)">
+
+          <h3 class="repo__name">
+            {{repo.owner}}/{{repo.name}}
+          </h3>
+
+          <p v-if="repo.description" class="repo__description">
+            {{repo.description}}
+          </p>
+
+          <span v-if="repo.open_issues" class="repo__issues">
+            {{repo.open_issues}}
+          </span>
+
+          <i 
+            :class="`
+              ion-checkmark-round
+              repo__checkmark
+              ${isRepoSelected(repo) && 'repo__checkmark--active'}
+            `" 
+          />
+
+          <div v-if="!repo.hasIssuesEnabled" class="repo__blocked" />
+
+        </div>
+
+        <loading-spinner v-if="fetching" />
+
+      </infinite-scroll>
         
     </template>
     
@@ -66,18 +98,19 @@
           submit
           ${!select.length && 'submit--disabled'}
         `"
-        @click="submitSelect">
-        Select repos
+        @click="submitSelectedRepos">
+        {{select.length
+          ? `Add ${select.length} ${select.length === 1 ? 'repository' : 'repositories'} to manage`
+          : 'Select repositories to manage'
+        }}
       </button>
     </template>
 
-  </modal-layout>
+  </modal>
 </template>
 
 <script>
 import { mapState } from 'vuex';
-
-import ModalLayout from '../../Common/Modals/Layout';
 
 import utils from '../../../helpers/utils';
 
@@ -87,9 +120,18 @@ export default {
     select: [],
     search: '',
 
-    repos: [],
+    message: {
+      active: false,
+      content: '',
+    },
+
+    repos: {
+      list: [],
+      pageInfo: {},
+    },
 
     loading: false,
+    fetching: false,
   }),
   computed: {
     ...mapState('auth', [
@@ -97,9 +139,10 @@ export default {
     ]),
   },
   methods: {
-    submitSelect() {
+    submitSelectedRepos() {
       utils.message('repos', { type: 'addRepo', value: this.select });
     },
+
     cancelSelectByTag(index) {
       this.select = this.select.filter((item, idx) => idx !== index);
     },
@@ -108,8 +151,11 @@ export default {
         this.select = this.select.filter((item, idx) => idx !== this.select.length - 1);
       }
     },
+    isRepoSelected(repo) {
+      return this.select.map(item => item.id).indexOf(repo.id) > -1;
+    },
     handleSelectRepo(repo) {
-      if (this.select.map(item => item.id).indexOf(repo.id) > -1) {
+      if (this.isRepoSelected(repo)) {
         this.select = this.select.filter(item => item.id !== repo.id);
       } else {
         this.select = [
@@ -118,13 +164,23 @@ export default {
         ];
       }
     },
-    searchRepos(query) {
-      this.loading = true;
+
+    requestRepos(appendList = [], pagingOption = '') {
+      if (appendList.length) {
+        this.fetching = true;
+      } else {
+        this.loading = true;
+      }
 
       utils.request({
         token: this.token,
         query: `{
-          search(first:30 type:REPOSITORY query:"${query}") {
+          search(first:20 type:REPOSITORY query:"${this.search}" ${pagingOption}) {
+            repositoryCount
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             nodes {
               ... on Repository {
                 id
@@ -143,80 +199,73 @@ export default {
           }
         }`,
       }).then(({ search }) => {
-        this.repos = search.nodes.map(({
-          id,
-          name,
-          description,
-          owner,
-          issues,
-          viewerCanAdminister,
-          hasIssuesEnabled,
-        }) => ({
-          id,
-          name,
-          description,
-          owner: owner.login,
-          open_issues: issues.totalCount,
-          viewerCanAdminister,
-          $isDisabled: !hasIssuesEnabled,
-        }));
+        if (appendList.length) {
+          this.fetching = false;
+        } else {
+          this.loading = false;
+        }
 
-        this.loading = false;
+        this.repos = {
+          list: [
+            ...appendList,
+            ...search.nodes.map(({
+              id,
+              name,
+              description,
+              owner,
+              issues,
+              viewerCanAdminister,
+              hasIssuesEnabled,
+            }) => ({
+              id,
+              name,
+              description,
+              owner: owner.login,
+              open_issues: issues.totalCount,
+              viewerCanAdminister,
+              hasIssuesEnabled,
+            })),
+          ],
+          pageInfo: search.pageInfo,
+        };
+
+        if (!appendList.length) {
+          this.message = {
+            active: true,
+            content: search.repositoryCount
+              ? `${search.repositoryCount} repository results`
+              : `We couldn’t find any repositories matching '${this.search}'`,
+          };
+
+          setTimeout(() => {
+            this.message.active = false;
+          }, 3000);
+        }
       });
     },
-    requestMyRepos(pagingOpt = '') {
+    requestMoreRepos() {
+      const { hasNextPage, endCursor } = this.repos.pageInfo;
+
+      if (hasNextPage) {
+        this.requestRepos(this.repos.list, `after: "${endCursor}"`);
+      }
+    },
+    requestMyInfo() {
       utils.request({
         token: this.token,
         query: `{
           viewer {
-            repositories(first: 15 ${pagingOpt} orderBy: {field: PUSHED_AT direction: DESC}) {
-              totalCount
-              pageInfo {
-                hasNextPage
-                endCursor
-              }
-              nodes {
-                id
-                name
-                description
-                owner {
-                  login
-                }
-                issues(states:OPEN) {
-                  totalCount
-                }
-                viewerCanAdminister
-                hasIssuesEnabled
-              }
-            }
+            login
           }
         }`,
-      }).then(({ viewer: { repositories } }) => {
-        this.repos = repositories.nodes.map(({
-          id,
-          name,
-          description,
-          owner,
-          issues,
-          viewerCanAdminister,
-          hasIssuesEnabled,
-        }) => ({
-          id,
-          name,
-          description,
-          owner: owner.login,
-          open_issues: issues.totalCount,
-          viewerCanAdminister,
-          hasIssuesEnabled,
-        }));
+      }).then(({ viewer }) => {
+        this.search = `user:${viewer.login}`;
+        this.requestRepos();
       });
     },
   },
   created() {
-    this.requestMyRepos();
-  },
-  components: {
-    ModalLayout,
+    this.requestMyInfo();
   },
 };
 </script>

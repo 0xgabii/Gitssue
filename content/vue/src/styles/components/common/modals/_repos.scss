@@ -14,29 +14,33 @@
   }
 
   &-body {
+    position: relative;    
     background-color: lighten($black, 7%);
-    height: 20rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-  
-    &::-webkit-scrollbar {
-      width: 10px;
-      background-color: transparent;
-    }
-  
-    &::-webkit-scrollbar-track,
-    &::-webkit-scrollbar-thumb {
-      border: 2px solid rgba(255, 255, 255, 0);
-      border-radius: 1rem;
-      background-clip: padding-box;
-    }
-  
-    &::-webkit-scrollbar-track {
-      background-color: lighten($black, 7%);
-    }
-  
-    &::-webkit-scrollbar-thumb {
-      background-color: $black;
+
+    .repos {
+      height: 20rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+    
+      &::-webkit-scrollbar {
+        width: 10px;
+        background-color: transparent;
+      }
+    
+      &::-webkit-scrollbar-track,
+      &::-webkit-scrollbar-thumb {
+        border: 2px solid rgba(255, 255, 255, 0);
+        border-radius: 1rem;
+        background-clip: padding-box;
+      }
+    
+      &::-webkit-scrollbar-track {
+        background-color: lighten($black, 7%);
+      }
+    
+      &::-webkit-scrollbar-thumb {
+        background-color: $black;
+      }
     }
   }
 
@@ -114,6 +118,39 @@
   }
 }
 
+.message {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  z-index: 10;
+
+  padding: 0.5rem 1.7rem 0.5rem 0.7rem;
+  background-color: $blue;
+  border-radius: 3px;
+  opacity: 0;
+  pointer-events: none;
+  white-space: nowrap;
+
+  transform: translateX(-50%);
+  transition: all 0.3s;
+  box-shadow: $shadow-1;    
+
+  &--active {
+    top: 1rem;
+    opacity: 1;
+    cursor: pointer;
+    pointer-events: auto;
+  }
+  
+  i {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    font-size: 0.8rem;
+    transform: translateY(-50%);
+  }
+}
+
 .repo {
   position: relative;
   padding: 1rem;
@@ -125,11 +162,11 @@
   }
 
   &__name {
-    
+
   }
 
   &__description {
-    padding-top: 0.4rem;
+    padding: 0.4rem 0 0.2rem;
     font-size: 0.8rem;
     width: 20rem;
     color: rgba(255, 255, 255, 0.7);
@@ -140,16 +177,29 @@
 
   &__issues {
     position: absolute;
-    right: 3px;
-    top: 50%;
+    right: 0;
+    top: 0;
     
-    padding: 0.3rem 0.35rem;
+    padding: 0.3rem 0.3rem 0.3rem 0.5rem;
     background-color: $blue;    
-    border-radius: 1rem;
+    border-bottom-left-radius: 1rem;
     color: white;
-    font-size: 0.8rem;    
+    font-size: 0.7rem;    
     box-shadow: $shadow-0;
+  }
+
+  &__checkmark {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
     transform: translateY(-50%);
+    transition: all 0.2s;    
+
+    &--active {
+      color: white;
+    }
   }
 
   &__blocked {
