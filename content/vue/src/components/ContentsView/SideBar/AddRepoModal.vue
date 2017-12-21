@@ -24,7 +24,11 @@
           :value="search"
           @keydown.delete="cancelSelectByInput"
           @keydown.enter="requestRepos"
-          @input="(e) => search = e.target.value"
+          @input="(e) => {
+            const input = e.target.value;
+            e.target.style.width = `${input.length * 8}px`;
+            search = input;
+          }"
         />
 
         <div 
@@ -141,6 +145,7 @@ export default {
   methods: {
     submitSelectedRepos() {
       utils.message('repos', { type: 'addRepo', value: this.select });
+      this.$emit('close');
     },
 
     cancelSelectByTag(index) {
