@@ -1,0 +1,35 @@
+.contextMenu {
+  display: flex;
+  flex-direction: column;
+
+  position: fixed;
+  z-index: 10001;
+  border: 1px solid $black;
+  border-radius: 0.3rem;
+  outline: none;
+  overflow: hidden;
+  font-size: 0.8rem;
+  box-shadow: $shadow-1;
+
+  &__item {
+    padding: 0.65rem;
+    background-color: lighten($black, 3%);
+    cursor: pointer;
+    
+    &:hover {
+      background-color: lighten($black, 8%);
+    }
+
+    &--default {
+      color: rgba(255, 255, 255, 0.7); 
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    &--warn {
+      color: rgb(255, 42, 42);
+    }
+  }
+}
