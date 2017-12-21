@@ -14,13 +14,14 @@
     </router-link>
 
     <router-link 
-      v-for="repo in repos"
+      v-for="(repo, index) in repos"
       class="circle repo"
       tag="div"
       replace
       v-tooltip.right="`${repo.owner}/${repo.name}`"
       :key="repo.id"
-      :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }">
+      :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }"
+      @contextmenu.native.prevent="$refs.contextMenu.show($event, Object.assign({ index }, repo))">
 
       <span class="repo__name">
         {{repo.name.slice(0, 4)}}
@@ -36,10 +37,22 @@
       <i class="ion-ios-plus-empty" />
     </div>
 
+
     <add-repo-modal 
       v-show="modals.repos" 
       @close="modals.repos = false" 
     />
+
+    <context-menu ref="contextMenu">
+      <template slot-scope="{ data }">
+        <context-item>Mute notifications</context-item>
+        <context-item
+          type="warn"
+          @click.native="removeManagedRepo(data)">
+          No longer manage repo
+        </context-item>
+      </template>
+    </context-menu>
 
   </div>
 </template>
@@ -126,6 +139,11 @@ export default {
           };
         });
       });
+    },
+
+    removeManagedRepo({ index }) {
+      utils.message('repos', { type: 'removeRepo', value: index });
+      this.$refs.contextMenu.hide();
     },
   },
   created() {
