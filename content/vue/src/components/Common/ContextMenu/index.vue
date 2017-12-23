@@ -2,7 +2,6 @@
   <div
     v-show="visible"
     class="contextMenu"
-    ref="contextMenu"
     :style="position"
     tabindex="-1"
     @blur="visible = false"
@@ -14,9 +13,6 @@
 <script>
 export default {
   name: 'ContextMenu',
-  props: [
-    'el',
-  ],
   data: () => ({
     visible: false,
     x: 0,
@@ -44,7 +40,7 @@ export default {
     },
   },
   mounted() {
-    document.body.appendChild(this.$refs.contextMenu);
+    document.body.appendChild(this.$el);
   },
 };
 </script>
