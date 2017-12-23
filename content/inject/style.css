@@ -1,6 +1,6 @@
 #vGitssue {
   position: fixed;
-  z-index: 100000;
+  z-index: 99999;
   border: 0;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
   transition: all 0.3s;
@@ -13,5 +13,5 @@
 #wrapper_canvas {
   position: absolute;
   left: 0;
-  z-index: 99999;
+  z-index: 100000;
 }

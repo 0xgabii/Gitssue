@@ -1,0 +1,25 @@
+.cropper-crop-buttonBox {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.cropper-crop-buttonBox button {
+  margin-left: 8px;
+  padding: 5px 9px;
+  font-size: 14px;
+  border: none;
+  border-radius: 3px;  
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.cropper-crop-buttonBox .cancelBtn {
+  background-color: white;
+}
+
+.cropper-crop-buttonBox .captureBtn {
+  background-color: rgb(50, 118, 254);
+  color: white;
+}

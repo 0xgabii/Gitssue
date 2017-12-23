@@ -5,8 +5,8 @@ const capture = {
   cropper: undefined,
   isFullCapture: false,
 
-  init(isFullCapture) {
-    this.isFullCapture = isFullCapture;
+  init(type) {
+    this.isFullCapture = type === 'full';
 
     this.createCanvas();
     this.setButtonDisplay(false);
@@ -85,8 +85,27 @@ const capture = {
 
   initCrop() {
     this.cropper = new Cropper(this.canvas, {
+      highlight: false,
       zoomable: false,
-      autoCropArea: 0.3,
+      autoCropArea: this.isFullCapture ? 1 : 0.3,
+      ready: () => {
+        const captureBtn = document.createElement('button');
+        captureBtn.className = 'captureBtn';
+        captureBtn.innerText = 'Capture';
+        captureBtn.addEventListener('click', e => this.crop(e));
+        
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancelBtn';
+        cancelBtn.innerText = 'Cancel';     
+        cancelBtn.addEventListener('click', e => this.destroy(e));     
+
+        const buttonBox = document.createElement('div');
+        buttonBox.className = 'cropper-crop-buttonBox';
+
+        buttonBox.appendChild(cancelBtn);        
+        buttonBox.appendChild(captureBtn);
+        document.querySelector('.cropper-crop-box').appendChild(buttonBox);        
+      },
     });
   },
 
@@ -103,8 +122,10 @@ const capture = {
     ctx.drawImage(this.canvas, left, top, width, height, 0, 0, width, height);
 
     this.uploadGDrive(canvas.toDataURL()).then((imgURL) => {
-      message.send('capture', { imgURL });
+      prompt('Copy & paste this into markdown', `![](${imgURL})`);
     });
+
+    this.destroy();
   },
 
   destroy() {
@@ -119,7 +140,6 @@ const capture = {
 
     return new Promise((resolve) => {
       port.onMessage.addListener((imgURL) => {
-        console.log(imgURL);
         resolve(imgURL);
       });
     });

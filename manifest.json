@@ -17,16 +17,17 @@
       ],
       "css": [
         "content/inject/style.css",        
+        "content/capture/lib/cropper-custom.css",
         "content/capture/lib/cropper.min.css"
       ],
       "js": [
-        "content/inject/index.js",
         "content/message.js",        
         "content/auth.js",
         "content/ui.js",
         "content/repos.js",
         "content/capture/index.js",
-        "content/capture/lib/cropper.min.js"        
+        "content/capture/lib/cropper.min.js",
+        "content/inject/index.js"           
       ]
     }
   ],
