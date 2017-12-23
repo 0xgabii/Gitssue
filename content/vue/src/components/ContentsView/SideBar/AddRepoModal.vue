@@ -32,7 +32,7 @@
         />
 
         <div 
-          v-if="!select.length && !search"
+          v-show="!select.length && !search"
           class="tagsinput__placeholder">
           Please enter repository name
         </div>
