@@ -14,13 +14,7 @@
       </div>
 
       <div class="toolbar">
-       
-        <button 
-          v-if="mode === tabs[0]"
-          @click="modals.capture = true">
-          <i class="ion-camera" /> Capture
-        </button>
-
+       <capture-dropdown />
       </div>
     </div>
 
@@ -42,11 +36,6 @@
       class="mditor__preview markdown-preview custom-scroll"       
       :style="overflow"
     />
-
-    <capture-modal 
-      v-show="modals.capture"
-      @close="modals.capture = false" 
-    />
     
   </div>
 </template>
@@ -55,7 +44,7 @@
 import marked from 'marked';
 import hljs from 'highlight.js';
 
-import CaptureModal from './CaptureModal';
+import CaptureDropdown from './CaptureDropdown';
 
 marked.setOptions({
   highlight: code => hljs.highlightAuto(code).value,
@@ -85,10 +74,6 @@ export default {
   data: () => ({
     tabs: ['write', 'preview'],
     mode: 'write',
-
-    modals: {
-      capture: false,
-    },
   }),
   computed: {
     parsedText() {
@@ -199,7 +184,7 @@ export default {
     });
   },
   components: {
-    CaptureModal,
+    CaptureDropdown,
   },
 };
 </script>

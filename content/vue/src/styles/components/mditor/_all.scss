@@ -9,9 +9,9 @@
     display: flex;
     justify-content: space-between;
 
-    padding: 0 10px;
+    padding: 0 0.5rem;
     background-color: lighten($black, 3%);
-    border-bottom: 1px solid lighten($black, 3%);
+    border-bottom: 2px solid transparent;
 
     .tabNav {
       
@@ -37,7 +37,7 @@
 
             position: absolute;
             left: 0;
-            bottom: -1px;
+            bottom: -2px;
 
             height: 3px;
             width: 100%;
