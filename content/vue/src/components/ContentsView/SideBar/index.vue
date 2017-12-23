@@ -1,59 +1,62 @@
 <template>
   <div class="contentsView-sidebar">
-    
-    <router-link 
-      v-tooltip.right="`${user.name} | ${user.login}`"
-      class="circle user"
-      tag="div"
-      to="lol">
-      <img 
-        class="user__profile"
-        :src="user.avatarUrl" 
-        :alt="user.name"
+    <div>
+
+      <router-link 
+        class="user"
+        tag="div"
+        to="lol">
+        <img 
+          v-tooltip.right="`${user.name} | ${user.login}`"          
+          class="user__profile"
+          :src="user.avatarUrl" 
+          :alt="user.name"
+        />
+      </router-link>
+
+      <div class="repos">
+        <router-link 
+          v-for="(repo, index) in repos"
+          class="repo"
+          tag="div"
+          replace
+          v-tooltip.right="`${repo.owner}/${repo.name}`"
+          :key="repo.id"
+          :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }"
+          @contextmenu.native.prevent="$refs.contextMenu.show($event, Object.assign({ index }, repo))">
+
+          <span class="repo__name">
+            {{repo.name.slice(0, 4)}}
+          </span>
+          
+          <label v-if="repo.open_issues" class="repo__openIssues">
+            {{repo.open_issues >= 100 ? '99+' : repo.open_issues}}
+          </label>
+
+        </router-link>
+
+        <div class="circle repo repo--plus" @click="modals.repos = true">
+          <i class="ion-ios-plus-empty" />
+        </div>
+      </div>
+
+      <add-repo-modal 
+        v-show="modals.repos" 
+        @close="modals.repos = false" 
       />
-    </router-link>
 
-    <router-link 
-      v-for="(repo, index) in repos"
-      class="circle repo"
-      tag="div"
-      replace
-      v-tooltip.right="`${repo.owner}/${repo.name}`"
-      :key="repo.id"
-      :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }"
-      @contextmenu.native.prevent="$refs.contextMenu.show($event, Object.assign({ index }, repo))">
+      <context-menu ref="contextMenu">
+        <template slot-scope="{ data }">
+          <context-item>Mute notifications</context-item>
+          <context-item
+            type="warn"
+            @click.native="removeManagedRepo(data)">
+            No longer manage repo
+          </context-item>
+        </template>
+      </context-menu>
 
-      <span class="repo__name">
-        {{repo.name.slice(0, 4)}}
-      </span>
-      
-      <label v-if="repo.open_issues" class="repo__openIssues">
-        {{repo.open_issues >= 100 ? '99+' : repo.open_issues}}
-      </label>
-
-    </router-link>
-
-    <div class="circle repo repo--plus" @click="modals.repos = true">
-      <i class="ion-ios-plus-empty" />
     </div>
-
-
-    <add-repo-modal 
-      v-show="modals.repos" 
-      @close="modals.repos = false" 
-    />
-
-    <context-menu ref="contextMenu">
-      <template slot-scope="{ data }">
-        <context-item>Mute notifications</context-item>
-        <context-item
-          type="warn"
-          @click.native="removeManagedRepo(data)">
-          No longer manage repo
-        </context-item>
-      </template>
-    </context-menu>
-
   </div>
 </template>
 

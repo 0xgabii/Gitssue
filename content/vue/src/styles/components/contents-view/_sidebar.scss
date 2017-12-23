@@ -1,32 +1,59 @@
 &-sidebar {
-  padding: 0.5rem 0.75rem;
+  position: relative;
   background-color: $black;
+  overflow: hidden;
 
-  .circle {
-    position: relative;
-    width: 3rem;
-    height: 3rem;
-    background-color: lighten($black, 8%);
-    color: white;    
-    cursor: pointer;    
-    box-shadow: $shadow-0;        
+  > div {
+    width: calc(100% + 17px);
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
 
   .user {
-    border-radius: 3px;
-    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 0;        
+    padding-top: 0.3rem;
+    width: 100%;    
+    background-color: $black;
+    z-index: 1;
+    box-shadow: 0 5px 5px -3px $black;    
+
+    &:after {
+      content: '';
+      display: block;
+      height: 1px;
+      margin: 0.7rem 0.7rem 0 0.7rem;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
 
     &__profile {
       display: block;
-      width: 100%;
-      height: 100%;
+      margin: auto;
+      width: 3rem;
+      height: 3rem;
+      background-color: transparent;      
+      border-radius: 3px;    
+      cursor: pointer;          
     }
   }
 
+  .repos {
+    padding-top: 4.5rem;
+  }
+
   .repo {
-    margin: 0.75rem 0;
-    border-radius: 100%;
+    position: relative;    
+    margin: 0 auto 0.75rem auto;
+    width: 3rem;
+    height: 3rem;
+    background-color: lighten($black, 8%);
+    border-radius: 100%;    
+    color: white;    
+    cursor: pointer;    
     transition: all 0.3s;
+    box-shadow: $shadow-0;     
 
     &:hover:not(.repo--plus) {
       background-color: $blue;
@@ -60,7 +87,7 @@
         content: '';
         position: absolute;
         top: 50%;
-        left: -25%;
+        left: -20%;
 
         height: 80%;
         width: 5px;
@@ -87,7 +114,7 @@
       padding: 0.25rem 0.3rem;
       background-color: red;
       border-radius: 1rem;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       transform: translate(-50%, -50%);
     }
   }
