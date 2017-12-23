@@ -238,7 +238,7 @@ export default {
           this.message = {
             active: true,
             content: search.repositoryCount
-              ? `${search.repositoryCount} repository results`
+              ? `${search.repositoryCount.toLocaleString()} repository results`
               : `We couldn’t find any repositories matching '${this.search}'`,
           };
 
