@@ -8,6 +8,8 @@ import LoadingSpinner from '../components/Common/LoadingSpinner';
 import RelativeTime from '../components/Common/RelativeTime';
 import ContextMenu from '../components/Common/ContextMenu';
 import ContextMenuItem from '../components/Common/ContextMenu/item';
+import Dropdown from '../components/Common/Dropdown';
+import DropdownItem from '../components/Common/Dropdown/item';
 
 const install = (Vue) => {
   Vue.use(VueScrollTo);
@@ -20,6 +22,8 @@ const install = (Vue) => {
   Vue.component('relative-time', RelativeTime);
   Vue.component('context-menu', ContextMenu);
   Vue.component('context-item', ContextMenuItem);
+  Vue.component('dropdown', Dropdown);
+  Vue.component('dropdown-item', DropdownItem);
 };
 
 export default install;

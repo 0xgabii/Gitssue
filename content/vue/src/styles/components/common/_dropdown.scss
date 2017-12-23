@@ -1,0 +1,43 @@
+.dropdown {
+  position: relative;
+
+  &__control {
+    padding: 0.4rem 0.5rem;
+    background-color: lighten($black, 10%);
+    border: 2px solid $black;
+    border-radius: 3px;
+    outline: none;
+    color: white;
+    line-height: 100%;
+    cursor: pointer;
+
+    i {
+      margin-left: 3px;
+    }
+  }
+  
+  &-menu {
+    position: absolute;
+    top: calc(100% + 3px);
+    right: 0;
+    border-radius: 3px;
+    border: 1px solid $black;    
+    outline: none;
+    overflow: hidden;
+    font-size: 0.8rem;
+    box-shadow: $shadow-1;
+
+    &__item {
+      padding: 0.5rem;
+      background-color: lighten($black, 5%);
+      color: rgba(255, 255, 255, 0.7);       
+      white-space: nowrap;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($black, 8%);
+        color: white;
+      }
+    }
+  }
+}
