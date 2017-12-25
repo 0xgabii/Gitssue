@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    extend: true,
+    extend: false,
 
     position: {
       right: 25,
@@ -14,8 +14,8 @@ export default {
     },
 
     resize: {
-      width: 1000,
-      height: 600,
+      width: 1200,
+      height: 750,
     },
   },
   getters: {
