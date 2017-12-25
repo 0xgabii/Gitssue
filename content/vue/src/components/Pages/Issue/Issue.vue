@@ -4,14 +4,14 @@
     <header class="header">
 
       <div class="info">
-        <span
-          v-for="label in info.labels"
-          class="info__tag"
-          :key="label.id"
-          :style="{ color: label.color, backgroundColor: label.bgColor }">
-          {{label.name}}
+        <label class="info__number">#{{info.number}}</label>                
+        <span 
+          :class="`
+            info__state
+            info__state--${info.state}
+          `">
+          {{info.state}}
         </span>
-
         <h2 class="info__title">{{info.title}}</h2>
       </div>
 
@@ -21,35 +21,87 @@
 
     </header>
 
-    <section class="content custom-scroll">
+    <section class="body">
 
-      <loading-spinner v-if="loading" />
-      
-      <div v-else class="timeline">
-        <div class="timeline-item">
-          <issue-main
-            :data="info"
-            @update="requestIssue"
-          />
+      <section class="content custom-scroll">
+
+        <loading-spinner v-if="loading" />
+        
+        <div v-else class="timeline">
+          <div class="timeline-item">
+            <issue-main
+              :data="info"
+              @update="requestIssue"
+            />
+          </div>
+
+          <div
+            v-for="event in timeline"
+            class="timeline-item"
+            :key="event.id">
+            <component 
+              :is="event.__typename" 
+              :data="event"
+              @update="requestIssue"
+            />
+          </div>
+
+          <div class="timeline-item">
+            <add-comment
+              :info="info"
+              :viewer="viewer"
+              @update="requestIssue"
+            />
+          </div>
         </div>
+  
+      </section>
 
-        <div
-          class="timeline-item"
-          v-for="event in timeline"
-          :key="event.id">
-          <component 
-            :is="event.__typename" 
-            :data="event"
-            @update="requestIssue"
-          />
-        </div>
+      <div class="sidebar">
+        <div>
 
-        <div class="timeline-item">
-          <add-comment
-            :info="info"
-            :viewer="viewer"
-            @update="requestIssue"
-          />
+          <div class="sidebar-item">
+            <h3 class="sidebar-item__name">Labels</h3>
+            <div class="sidebar-item__content">
+              <span
+                v-for="label in info.labels"
+                class="labels"
+                :key="label.id"
+                :style="{ color: label.color, backgroundColor: label.bgColor }">
+                {{label.name}}
+              </span>
+              <p 
+                v-if="info.labels && !info.labels.length"
+                class="sidebar-item__placeholder">
+                No Labels
+              </p>
+            </div>
+          </div>
+
+          <div class="sidebar-item">
+            <h3 class="sidebar-item__name">Comments</h3>
+            <div class="sidebar-item__content">
+              <p 
+                v-for="item in timeline"
+                v-if="item.__typename === 'IssueComment'"
+                v-scroll-to="{
+                  el: `.comment--${item.databaseId}`,
+                  container: '.issuePage .content',
+                  offset: -25,
+                }"
+                class="comments"
+                :key="item.id">
+                <img :src="item.author.avatarUrl" />
+                {{item.author.login}}     
+              </p>
+              <p 
+                v-if="!info.comments"
+                class="sidebar-item__placeholder">
+                No Comments
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -104,6 +156,8 @@ export default {
           repository(owner: "${owner}" name: "${name}") {
             issue(number: ${number}) {
               id
+              number
+              state
               title
               author {
                 avatarUrl
@@ -136,7 +190,6 @@ export default {
       }).then(({ viewer, repository: { issue } }) => {
         this.info = {
           ...issue,
-          title: issue.title,
           labels: issue.labels ? issue.labels.nodes.map(node => ({
             id: node.id,
             name: node.name,
@@ -144,8 +197,7 @@ export default {
             bgColor: `#${node.color}`,
           })) : [],
           comments: issue.comments.totalCount,
-          viewerCanUpdate: issue.viewerCanUpdate,
-          closed: issue.closed,
+          state: issue.state.toLowerCase(),
         };
 
         this.viewer = {
