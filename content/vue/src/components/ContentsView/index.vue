@@ -13,10 +13,13 @@
 
       </template>
 
-      <div v-else>
-        you have to login github for viewing repos & issue
-        <button @click="signIn">Sign In</button>
-      </div>
+      <button 
+        v-else
+        class="signIn" 
+        @click="signIn">
+        <i class="ion-social-github" />
+        Sign in with Github
+      </button>
       
     </div>
     
