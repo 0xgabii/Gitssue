@@ -19,11 +19,9 @@ const base = document.createElement('base');
 base.target = '_blank';
 document.head.appendChild(base);
 
-if (process.env.NODE_ENV === 'develop') {
-  const app = document.createElement('div');
-  app.id = 'app';
-  document.body.appendChild(app);
-}
+const app = document.createElement('div');
+app.id = 'app';
+document.body.appendChild(app);
 
 /* eslint-disable no-new */
 new Vue({
