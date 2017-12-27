@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 
-import Repos from '../components/Pages/Repos';
+import Profile from '../components/Pages/Profile';
 import Issues from '../components/Pages/Issues';
 import Issue from '../components/Pages/Issue';
 import NewIssue from '../components/Pages/NewIssue';
@@ -12,8 +12,8 @@ export default new VueRouter({
   routes: [
     {
       path: '/',
-      name: 'Repos',
-      component: Repos,
+      name: 'Profile',
+      component: Profile,
     },
     {
       path: '/:owner/:name/issues',

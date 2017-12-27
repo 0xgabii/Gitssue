@@ -5,7 +5,8 @@
       <router-link 
         class="user"
         tag="div"
-        to="lol">
+        replace
+        :to="{ name: 'Profile' }">
         <img 
           v-tooltip.right="`${user.name} | ${user.login}`"          
           class="user__profile"
@@ -35,7 +36,10 @@
 
         </router-link>
 
-        <div class="circle repo repo--plus" @click="modals.repos = true">
+        <div 
+          v-tooltip.right="'Click to add repos'"
+          class="circle repo repo--plus" 
+          @click="modals.repos = true">
           <i class="ion-ios-plus-empty" />
         </div>
       </div>
