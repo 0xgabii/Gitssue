@@ -4,6 +4,10 @@
   right: 0;
 }
 
+.vb .vb-content {
+  width: calc(100% + 17px) !important;
+}
+
 .vb > .vb-dragger > .vb-dragger-styler {
   display: block;
   margin: 5px 5px 5px 0;
