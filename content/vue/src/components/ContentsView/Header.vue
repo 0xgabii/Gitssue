@@ -13,7 +13,9 @@
         <i class="ion-ios-arrow-forward" />
       </button>
 
-      <p class="navigate__location">{{$route.fullPath}}</p>
+      <p class="navigate__location">
+        {{routerTitle}}
+      </p>
     </div>
     
     <div class="controls">
@@ -50,6 +52,19 @@ export default {
       if (current === 0) return false;
 
       return true;
+    },
+
+    routerTitle() {
+      const { name, params } = this.$route;
+
+      const type = {
+        Profile: 'Profile',
+        Issue: `Issue #${params.number} - ${params.owner}/${params.name}`,
+        Issues: `Issues - ${params.owner}/${params.name}`,
+        NewIssue: `New Issue - ${params.owner}/${params.name}`,
+      };
+
+      return type[name];
     },
   },
   watch: {
