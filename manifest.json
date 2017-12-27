@@ -5,10 +5,6 @@
   "manifest_version": 2,
   "description": "Manage your github issue",
 
-  "browser_action": {
-    "default_popup": "./popup/index.html"
-  },
-
   "content_scripts": [
     {
       "matches": [
@@ -21,10 +17,11 @@
         "content/capture/lib/cropper.min.css"
       ],
       "js": [
-        "content/message.js",        
+        "content/message.js", 
         "content/auth.js",
         "content/ui.js",
         "content/repos.js",
+        "content/sync.js",
         "content/capture/index.js",
         "content/capture/lib/cropper.min.js",
         "content/inject/index.js"           

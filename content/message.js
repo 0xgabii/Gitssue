@@ -8,5 +8,6 @@ const message = {
     ui: ({ type, value }) => ui[type](value),
     capture: ({ type, value }) => capture[type](value),
     repos: ({ type, value }) => repos[type](value),
+    sync: ({ type, value }) => sync[type](value),
   },
 };

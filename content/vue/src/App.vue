@@ -33,6 +33,18 @@ export default {
     computedStyle(style) {
       this.handleIframeStyle(style);
     },
+    extend(bools) {
+      utils.message('sync', {
+        type: 'save',
+        value: { ui: { extend: bools } },
+      });
+    },
+    $route(to) {
+      utils.message('sync', {
+        type: 'save',
+        value: { route: to.fullPath },
+      });
+    },
   },
   methods: {
     ...mapActions('auth', [
@@ -48,6 +60,21 @@ export default {
   created() {
     this.authentication();
     this.handleIframeStyle();
+
+    // start synchronize settings
+    utils.message('sync', { type: 'load' });
+    // apply synchronized settings
+    window.addEventListener('message', ({ data: { port, msg } }) => {
+      if (port === 'sync') {
+        const { route, ui } = msg;
+
+        Object.keys(ui).forEach((key) => {
+          this.changeUI({ category: key, value: ui[key] });
+        });
+
+        this.$router.replace({ path: route });
+      }
+    });
   },
   components: {
     CotentsView,
