@@ -10,12 +10,12 @@ function startReceiveMessage() {
   window.addEventListener('message', ({ data }) => {
     if (message.process[data.port].constructor === Function) {
       message.process[data.port](data.msg);
-    };
+    }
   });
 }
 
 const interval = setInterval(() => {
-  if(Object.keys(message.process).length) {
+  if (Object.keys(message.process).length) {
     startInjection();
     startReceiveMessage();
     clearInterval(interval);

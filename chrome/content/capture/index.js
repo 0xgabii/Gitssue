@@ -93,18 +93,18 @@ const capture = {
         captureBtn.className = 'captureBtn';
         captureBtn.innerText = 'Capture';
         captureBtn.addEventListener('click', e => this.crop(e));
-        
+
         const cancelBtn = document.createElement('button');
         cancelBtn.className = 'cancelBtn';
-        cancelBtn.innerText = 'Cancel';     
-        cancelBtn.addEventListener('click', e => this.destroy(e));     
+        cancelBtn.innerText = 'Cancel';
+        cancelBtn.addEventListener('click', e => this.destroy(e));
 
         const buttonBox = document.createElement('div');
         buttonBox.className = 'cropper-crop-buttonBox';
 
-        buttonBox.appendChild(cancelBtn);        
+        buttonBox.appendChild(cancelBtn);
         buttonBox.appendChild(captureBtn);
-        document.querySelector('.cropper-crop-box').appendChild(buttonBox);        
+        document.querySelector('.cropper-crop-box').appendChild(buttonBox);
       },
     });
   },
@@ -144,4 +144,4 @@ const capture = {
       });
     });
   },
-}
+};

@@ -12,16 +12,16 @@ function oauth(port) {
     const code = new URL(uri).searchParams.get('code');
     const CLIENT_SECRET = 'e543b207ffc23254aa3b3a499d6b577447c8a21f';
 
-    const xhr = new XMLHttpRequest;
+    const xhr = new XMLHttpRequest();
     xhr.open('post', `https://github.com/login/oauth/access_token?code=${code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`);
     xhr.onreadystatechange = function () {
-      if(xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
         const access_token = xhr.responseText.split('access_token=')[1].split('&')[0];
 
         port.postMessage(access_token);
       }
     };
-    xhr.send();    
+    xhr.send();
   });
 }
 
@@ -29,9 +29,9 @@ function capture(port) {
   chrome.tabs.captureVisibleTab(
     null,
     { format: 'png' },
-    function(dataURL) {
+    (dataURL) => {
       port.postMessage(dataURL);
-    }
+    },
   );
 }
 
@@ -68,7 +68,7 @@ function saveToGoogleDrive(port, dataURL) {
       lastBoundary,
     ];
 
-    const uploadRequest = new XMLHttpRequest;
+    const uploadRequest = new XMLHttpRequest();
     uploadRequest.open('post', 'https://www.googleapis.com/upload/drive/v2/files?uploadType=multipart');
     uploadRequest.setRequestHeader('Authorization', `OAuth ${token}`);
     uploadRequest.setRequestHeader('Content-Type', `multipart/mixed; boundary=${mtpBoundary}`);
@@ -77,25 +77,25 @@ function saveToGoogleDrive(port, dataURL) {
     uploadRequest.onreadystatechange = () => {
       const { id, webContentLink } = JSON.parse(uploadRequest.response);
 
-      const permissionsRequest = new XMLHttpRequest;
+      const permissionsRequest = new XMLHttpRequest();
       permissionsRequest.open('post', `https://www.googleapis.com/drive/v2/files/${id}/permissions`);
       permissionsRequest.setRequestHeader('Authorization', `OAuth ${token}`);
       permissionsRequest.setRequestHeader('Content-Type', 'application/json');
       permissionsRequest.send(JSON.stringify({ role: 'reader', type: 'anyone' }));
-      
+
       permissionsRequest.onreadystatechange = () => {
         port.postMessage(webContentLink);
-      }
-    }
+      };
+    };
   });
 }
 
-chrome.runtime.onConnect.addListener(function(port) {
+chrome.runtime.onConnect.addListener((port) => {
   if (port.name === 'capture') {
     port.onMessage.addListener(() => capture(port));
   } else if (port.name === 'auth') {
     port.onMessage.addListener(() => oauth(port));
   } else {
-    port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));    
+    port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));
   }
 });

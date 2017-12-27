@@ -5,9 +5,9 @@ const sync = {
       const defaultSettings = {
         route: '/',
         ui: {},
-      }
+      };
 
-      message.send('sync', { 
+      message.send('sync', {
         ...defaultSettings,
         ...settings,
       });
