@@ -26,13 +26,9 @@ function oauth(port) {
 }
 
 function capture(port) {
-  chrome.tabs.captureVisibleTab(
-    null,
-    { format: 'png' },
-    (dataURL) => {
-      port.postMessage(dataURL);
-    },
-  );
+  chrome.tabs.captureVisibleTab(null, { format: 'png' }, function (dataURL) { 
+    port.postMessage(dataURL); 
+  });
 }
 
 function saveToGoogleDrive(port, dataURL) {

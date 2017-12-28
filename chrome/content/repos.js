@@ -1,6 +1,4 @@
 const repos = {
-  port: chrome.runtime.connect({ name: 'repos' }),
-
   init() {
     chrome.storage.sync.get('list', (results) => {
       message.send('repos', results.list || []);
@@ -17,7 +15,7 @@ const repos = {
   addRepo(repos) {
     chrome.storage.sync.get('list', (results) => {
       const list = results.list || [];
-      chrome.storage.sync.set({ list: [...list, ...repos] });
+      chrome.storage.sync.set({ list: list.concat(repos) });
     });
   },
   removeRepo(index) {
