@@ -1,9 +1,9 @@
 {
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk/cGbW38vblnDmulutqNvuv1hfQk0KZ3hl2PisXZSJQNHjuQMraQqWCTkcEcrzO4JYDTy4yQACB6TBiqDqubPmNoR/9SlxQpgIlHnm2yXgkRGi9lKurJ1WiCdd1AdMiUiEIGLVvGv72x+w+X2Hl1cw/lXuuchw/BtreJ7pwzZ6IUCso5IENH46FFOIyRUunJfUKy8seIextuXqTPZxo4q26PZVvcFfi8kUBVmmiZToRhvg7padXSL8kLfyBTVJvpgJZum0ts1KNYQ44gq3QLhY5DKxpCan+ZyHbOhHbCUd5vrWbr7myn2lvQqwPaJ9wyOSZILgDvvoVAmVNpVC8X1wIDAQAB",        
   "name": "Gitssue",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "manifest_version": 2,
-  "description": "Manage your github issue",
+  "description": "Allows you to manage issues outside of Github",
 
   "content_scripts": [
     {
