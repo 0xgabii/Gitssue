@@ -112,6 +112,11 @@ export default {
       utils.message('repos', { type: 'init' });
     },
     refreshRepos(list) {
+      if (!list.length) {
+        this.repos = [];
+        return;
+      }
+
       let query = '';
 
       list.forEach(({ name, owner }, index) => {
