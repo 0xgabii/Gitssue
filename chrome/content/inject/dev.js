@@ -8,7 +8,7 @@ function startInjection() {
 
 function startReceiveMessage() {
   window.addEventListener('message', ({ data }) => {
-    if (message.process[data.port].constructor === Function) {
+    if (typeof message.process[data.port] === "function") {
       message.process[data.port](data.msg);
     }
   });
