@@ -145,6 +145,7 @@ export default {
   methods: {
     submitSelectedRepos() {
       utils.message('repos', { type: 'addRepo', value: this.select });
+      this.select = [];
       this.$emit('close');
     },
 
