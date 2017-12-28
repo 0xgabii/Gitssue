@@ -1,27 +1,40 @@
 # Gitssue
 
-Manage your github issue by chrome extension
+Chrome extension - Allows you to manage issues outside of Github
+
+## Install
+
+- [Chrome extension](https://chrome.google.com/webstore/detail/gitssue/iagekpbdeollpioaefgfkjfdogeofjcf?hl=ko)
+
+## Highlights
+
+| UI focused on issue management |
+| :-------------: |
+| ![hero](docs/ui.gif) | 
+
+| Support Tab/UnTab when using editor |
+| :-------------: |
+| ![hero](docs/editor.gif) | 
+
+| Capture using chrome api & google drive api |
+| :-------------: |
+| ![hero](docs/capture.gif) | 
+
+## Q & A
+
+- Q: Why is the name Gitssue?
+  -  A: Manage **Git**hub's I**ssue**
+- Q: Why did you make this?
+  - A: I felt it was frustrating to be able to write an issue only inside Github, and I did not feel comfortable managing issues in multiple repositories
 
 ## TODO
 
-- ~~Github API~~: 
-  - ~~REST~~
-  - ~~GraphQL~~
-- ~~Github login~~
 - Manage issue
-  - ~~CRUD~~
   - Notification by desktop message, if user want
-- UI
-  - ~~Discord like UI~~
-  - ~~Synchronize ui when page load, refresh, move tab, etc.~~  
+- UI 
   - Customizable position & resizing by user
   - Tab design when viewing multiple issue (like 'vscode')
 - Editor like notepad
-    - ~~tab, shift + tab for indent/unindent~~
-    - ~~Capture~~
-      - ~~visible part & full-page~~
-      - ~~select & crop~~
-      - ~~upload google drive & get response~~
-      - ~~text/image blurry (because of canvas bug?)~~
+    - File upload
     - ctrl + z, ctrl + y for undo/redo      
     - autosave
