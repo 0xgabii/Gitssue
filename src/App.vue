@@ -28,10 +28,19 @@ export default {
     ...mapGetters('ui', [
       'computedStyle',
     ]),
+    ...mapState('resource', [
+      'sync',
+    ]),
   },
   watch: {
-    computedStyle(style) {
-      this.handleIframeStyle(style);
+    computedStyle: {
+      handler(style) {
+        utils.message('ui', {
+          type: 'changeStyle',
+          value: style,
+        });
+      },
+      immediate: true,
     },
     extend(bools) {
       utils.message('sync', {
@@ -39,42 +48,30 @@ export default {
         value: { ui: { extend: bools } },
       });
     },
-    $route(to) {
+    $route({ name, params }) {
       utils.message('sync', {
         type: 'save',
-        value: { route: to.fullPath },
+        value: { route: { name, params } },
+      });
+    },
+    sync({ ui, route }) {
+      this.$router.replace(route);
+
+      Object.keys(ui).forEach((key) => {
+        this.changeUI({ category: key, value: ui[key] });
       });
     },
   },
   methods: {
-    ...mapActions('auth', [
-      'authentication',
-    ]),
     ...mapActions('ui', [
       'changeUI',
     ]),
-    handleIframeStyle(style = this.computedStyle) {
-      utils.message('ui', { type: 'changeStyle', value: style });
-    },
+    ...mapActions('resource', [
+      'init',
+    ]),
   },
   created() {
-    this.authentication();
-    this.handleIframeStyle();
-
-    // start synchronize settings
-    utils.message('sync', { type: 'load' });
-    // apply synchronized settings
-    window.addEventListener('message', ({ data: { port, msg } }) => {
-      if (port === 'sync') {
-        const { route, ui } = msg;
-
-        Object.keys(ui).forEach((key) => {
-          this.changeUI({ category: key, value: ui[key] });
-        });
-
-        this.$router.replace({ path: route });
-      }
-    });
+    this.init();
   },
   components: {
     CotentsView,

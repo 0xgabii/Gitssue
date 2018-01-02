@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 
 import utils from '../../helpers/utils';
 
@@ -29,18 +29,18 @@ export default {
     },
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
   },
   methods: {
-    ...mapActions('auth', [
-      'signOut',
-    ]),
+    signOut() {
+      utils.message('auth', { type: 'signOut' });
+    },
 
     request() {
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           viewer {
             name

@@ -130,8 +130,8 @@ export default {
     loading: false,
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
   },
   watch: {
@@ -151,7 +151,7 @@ export default {
       const { owner, name, number } = this.$route.params;
 
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           repository(owner: "${owner}" name: "${name}") {
             issue(number: ${number}) {
@@ -213,7 +213,7 @@ export default {
       const { owner, name, number } = this.$route.params;
 
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           repository(owner: "${owner}" name: "${name}") {
             issue(number: ${number}) {

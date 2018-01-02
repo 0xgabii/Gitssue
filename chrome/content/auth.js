@@ -4,7 +4,7 @@ const auth = {
   init() {
     chrome.storage.sync.get('token', (results) => {
       const token = results.token;
-      message.send('auth', { token });
+      message.send('auth', token);
       // start observing token in storage
       this.observe();
     });
@@ -13,7 +13,7 @@ const auth = {
     chrome.storage.onChanged.addListener((changes) => {
       if (!changes.token) return;
       const token = changes.token.newValue;
-      message.send('auth', { token });
+      message.send('auth', token);
     });
   },
 

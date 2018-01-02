@@ -138,8 +138,8 @@ export default {
     fetching: false,
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
   },
   methods: {
@@ -179,7 +179,7 @@ export default {
       }
 
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           search(first:20 type:REPOSITORY query:"${this.search}" ${pagingOption}) {
             repositoryCount
@@ -258,7 +258,7 @@ export default {
     },
     requestMyInfo() {
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           viewer {
             login

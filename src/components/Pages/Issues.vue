@@ -116,8 +116,8 @@ export default {
     fetching: false,
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
   },
   watch: {
@@ -161,7 +161,7 @@ export default {
       }
 
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           search(first:20 type:ISSUE ${pagingOption} query:"${this.search} ${info}") {
             pageInfo {

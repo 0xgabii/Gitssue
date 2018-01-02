@@ -17,7 +17,7 @@
 
       <div class="repos">
         <router-link 
-          v-for="(repo, index) in repos"
+          v-for="(repo, index) in repositories"
           class="repo"
           tag="div"
           replace
@@ -80,21 +80,30 @@ export default {
       avatarUrl: '',
     },
 
-    repos: [],
+    repositories: [],
 
     modals: {
       repos: false,
     },
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
+      'repos',
     ]),
+  },
+  watch: {
+    repos: {
+      handler(list) {
+        this.refreshRepos(list);
+      },
+      immediate: true,
+    },
   },
   methods: {
     getUser() {
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           viewer {
             login
@@ -108,12 +117,9 @@ export default {
           };
         });
     },
-    getRepos() {
-      utils.message('repos', { type: 'init' });
-    },
     refreshRepos(list) {
       if (!list.length) {
-        this.repos = [];
+        this.repositories = [];
         return;
       }
 
@@ -135,12 +141,12 @@ export default {
       });
 
       utils.request({
-        token: this.token,
+        token: this.auth,
         query: `{
           ${query}  
         }`,
       }).then((repos) => {
-        this.repos = Object.keys(repos).map((key) => {
+        this.repositories = Object.keys(repos).map((key) => {
           const { id, name, owner, issues } = repos[key];
 
           return {
@@ -160,13 +166,6 @@ export default {
   },
   created() {
     this.getUser();
-    this.getRepos();
-
-    window.addEventListener('message', ({ data: { port, msg } }) => {
-      if (port === 'repos') {
-        this.refreshRepos(msg);
-      }
-    });
   },
   components: {
     AddRepoModal,

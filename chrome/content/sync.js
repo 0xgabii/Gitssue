@@ -1,10 +1,9 @@
 const sync = {
   settings: {
-    route: '/',
+    route: {},
     ui: {},
   },
-  
-  load() {
+  init() {
     chrome.storage.sync.get('settings', (results) => {
       const settings = results.settings;
 

@@ -78,8 +78,8 @@ export default {
     },
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
     actionText() {
       if (this.comment) {
@@ -101,7 +101,7 @@ export default {
         url: `/repos/${owner}/${name}/issues/${number}/comments`,
         method: 'post',
         params: {
-          access_token: this.token,
+          access_token: this.auth,
         },
         data: {
           body: this.comment,
@@ -123,7 +123,7 @@ export default {
         url: `/repos/${owner}/${name}/issues/${number}`,
         method: 'patch',
         params: {
-          access_token: this.token,
+          access_token: this.auth,
         },
         data: {
           state,

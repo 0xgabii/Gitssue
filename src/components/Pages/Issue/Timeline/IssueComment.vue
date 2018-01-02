@@ -91,8 +91,8 @@ export default {
     edit: false,
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
   },
   watch: {
@@ -111,7 +111,7 @@ export default {
         url: `/repos/${owner}/${name}/issues/comments/${this.data.databaseId}`,
         method: 'patch',
         params: {
-          access_token: this.token,
+          access_token: this.auth,
         },
         data: {
           body: this.markdown.text,
@@ -127,7 +127,7 @@ export default {
         url: `/repos/${owner}/${name}/issues/comments/${this.data.databaseId}`,
         method: 'delete',
         params: {
-          access_token: this.token,
+          access_token: this.auth,
         },
       }).then(() => this.$emit('update'));
     },

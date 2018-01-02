@@ -42,8 +42,8 @@ export default {
     isSending: false,
   }),
   computed: {
-    ...mapState('auth', [
-      'token',
+    ...mapState('resource', [
+      'auth',
     ]),
     submitDisabled() {
       return !this.title.length || this.isSending;
@@ -73,7 +73,7 @@ export default {
         url: `/repos/${owner}/${name}/issues`,
         method: 'post',
         params: {
-          access_token: this.token,
+          access_token: this.auth,
         },
         data: {
           title: this.title,
