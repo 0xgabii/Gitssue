@@ -76,7 +76,7 @@ module.exports = {
   },
   plugins: [
     new WebpackShellPlugin({
-      onBuildEnd:['node build/deploy.js']
+      onBuildEnd: ['node build/moveFiles.js']
     })
   ]
 }
