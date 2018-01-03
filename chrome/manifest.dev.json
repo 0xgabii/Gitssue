@@ -30,7 +30,10 @@
   ],
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background/disableCSP.js",
+      "background/index.js"
+    ]
   },
 
   "oauth2": {
@@ -46,6 +49,8 @@
     "storage",
     "identity",
     "http://*/*",
-    "https://*/*"
+    "https://*/*",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }
