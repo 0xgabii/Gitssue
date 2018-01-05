@@ -14,6 +14,7 @@ export default new VueRouter({
       path: '/',
       name: 'Profile',
       component: Profile,
+      meta: { keepAlive: true },
     },
     {
       path: '/:owner/:name/issues',
