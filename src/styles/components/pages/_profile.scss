@@ -1,40 +1,171 @@
-.profile {
-  padding: 2rem;
-  width: 12rem;
+%scrollbar {
+  &::-webkit-scrollbar {
+    background-color: transparent;
+  }
 
-  &__avatar {
-    margin-bottom: 0.5rem;
-    width: 100%; 
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-clip: padding-box;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: lighten($black, 7%);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: lighten($black, 2%);
+  }
+}
+
+%thickScrollbar {
+  @extend %scrollbar;
+
+  &::-webkit-scrollbar {
+    height: 25px;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: 7px solid rgba(255, 255, 255, 0);
+  }
+}
+
+
+%slimScrollbar {
+  @extend %scrollbar;
+
+  &::-webkit-scrollbar {
+    width: 13px;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border: 3px solid rgba(255, 255, 255, 0);
+  }
+}
+
+.board {
+  height: 100%;
+  background-color: lighten($black, 12%);
+  overflow: hidden;
+
+  &__title {
+    height: 1rem;
+    padding: 1rem;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 4px -3px #202225;
+  }
+
+  &-content {
+    @extend %thickScrollbar;
+
+    display: flex;
+    flex-wrap: nowrap;
+
+    padding: 1rem;
+    height: calc(100% - 5rem);
+    white-space: nowrap;
+    overflow-y: hidden;
+    overflow-x: auto;
+  }
+
+  .repo {
+    display: flex;
+    flex-direction: column;
+
+    margin-right: 1.5rem;
+    min-width: 20rem;
+    background-color: lighten($black, 10%);
+    border: 1px solid lighten($black, 5%);
     border-radius: 3px;
-  }
 
-  &__name {
-    line-height: 1.5;
-    font-size: 1.5rem;
-    font-weight: 500;
-  }
+    &:last-of-type {
+      margin-right: 0;
+    }
+    
+    &-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-  &__nickName {
-    margin-bottom: 1rem;
-    font-size: 1rem;
-  }
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 5px 5px -3px lighten($black, 5%);
 
-  &__signOut {
-    padding: 0.7rem 1rem;
-    width: 100%;
-    background-color: $black;
-    color: white;
-    cursor: pointer;
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: $shadow-0;
-    transition: all 0.2s;
+      h3 {
+        padding: 1rem;
+        white-space: normal;
+      }
 
-    &:hover {
-      box-shadow: $shadow-1;
+      i {
+        margin: 0 0.5rem;
+        padding: 0.5rem;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+    }
+
+    &-issues {
+      @extend %slimScrollbar;
+
+      flex: 1;
+
+      padding: 0 0.55rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .issue {
+        margin: 0.55rem 0;
+        padding: 0.5rem 0.75rem;
+        border-radius: 3px;
+        cursor: pointer;
+        background-color: lighten($black, 12%);
+        border: 1px solid lighten($black, 5%);
+        box-sizing: border-box;        
+    
+        &:hover {
+          background-color: lighten($black, 13.5%);
+        }
+    
+        &--open {
+          border-left: 3px solid $blue;
+        }
+    
+        &--closed {
+          border-left: 3px solid red;
+        }
+    
+        &__tag {
+          display: inline-block;
+          margin-bottom: 0.3rem;
+          margin-right: 0.3rem;
+          padding: 0.3rem;
+          border-radius: 3px;
+          font-size: 0.7rem;
+          box-shadow: $shadow-0;
+        }
+    
+        &__title {
+          margin-bottom: 0.3rem;
+          font-size: 1rem;
+          white-space: normal;
+          line-height: 1.2;
+        }
+    
+        &-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+    
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.7);
+    
+          i {
+            margin-right: 0.3rem;
+          }
+        }
+      }
     }
   }
 }
