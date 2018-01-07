@@ -10,11 +10,13 @@ import ContextMenu from '../components/Common/ContextMenu';
 import ContextMenuItem from '../components/Common/ContextMenu/item';
 import Dropdown from '../components/Common/Dropdown';
 import DropdownItem from '../components/Common/Dropdown/item';
+import Message from '../components/Common/Message';
 
 const install = (Vue) => {
   Vue.use(VueScrollTo);
   Vue.use(VTooltip);
   Vue.use(Vuebar);
+  Vue.use(Message);
 
   Vue.component('modal', Modal);
   Vue.component('infinite-scroll', InfiniteScroll);

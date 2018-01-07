@@ -1,0 +1,59 @@
+.vMessage-enter-active,
+.vMessage-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.vMessage-enter,
+.vMessage-leave-to {
+  top: -30px !important;
+  opacity: 0;
+}
+
+.vMessage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  z-index: 1;
+  padding: 0 1rem;
+  white-space: nowrap;
+  background-color: $black;
+  border-radius: 3px;
+  box-shadow: $shadow-1;
+  user-select: none;  
+  transform: translateX(-50%);
+
+  &__content {
+    padding: 1rem 0.3rem;
+    font-size: 1rem;
+  }
+
+  &-actions {
+    margin-left: 2rem;
+    
+    &__button {
+      padding: 0.5rem;
+      background-color: transparent;
+      border: none;
+      border-radius: 2px;
+      outline: none;
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.9rem;  
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        background-color: lighten($black, 5%);
+      }
+
+      &--highlight {
+        color: #eeff41;
+      }
+    }
+  }
+}
