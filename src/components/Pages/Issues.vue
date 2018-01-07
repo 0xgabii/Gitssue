@@ -114,11 +114,23 @@ export default {
 
     loading: false,
     fetching: false,
+
+    message: undefined,
   }),
   computed: {
     ...mapState('resource', [
       'auth',
+      'repos',
     ]),
+    issuesManaged() {
+      const { owner, name } = this.$route.params;
+
+      if (this.repos.filter(repo => repo.owner === owner && repo.name === name).length) {
+        return true;
+      }
+
+      return false;
+    },
   },
   watch: {
     $route(to) {
@@ -126,6 +138,26 @@ export default {
         Object.assign(this.$data, this.$options.data());
         this.requestIssues();
       }
+    },
+    issuesManaged: {
+      handler(bools) {
+        if (bools) return;
+
+        this.$message({
+          container: '.issuesWrapper',
+          content: 'This repository is not currently managed, do you want to add it?',
+          actions: [
+            { text: 'Yes, please', handler: 'add', type: 'highlight' },
+            { text: 'No, i dont', handler: 'hide' },
+          ],
+          handlers: {
+            add: () => {
+              utils.message('repos', { type: 'addRepo', value: this.$route.params });
+            },
+          },
+        });
+      },
+      immediate: true,
     },
   },
   methods: {
