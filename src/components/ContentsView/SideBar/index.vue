@@ -6,7 +6,8 @@
         class="user"
         tag="div"
         replace
-        :to="{ name: 'Profile' }">
+        :to="{ name: 'Profile' }"
+        @contextmenu.native.prevent="$refs.userContextMenu.show($event)">
         <img 
           v-tooltip.right="`${user.name} | ${user.login}`"          
           class="user__profile"
@@ -24,7 +25,7 @@
           v-tooltip.right="`${repo.owner}/${repo.name}`"
           :key="repo.id"
           :to="{ name: 'Issues', params: { owner: repo.owner, name: repo.name } }"
-          @contextmenu.native.prevent="$refs.contextMenu.show($event, Object.assign({ index }, repo))">
+          @contextmenu.native.prevent="$refs.reposContextMenu.show($event, Object.assign({ index }, repo))">
 
           <span class="repo__name">
             {{repo.name.slice(0, 4)}}
@@ -49,7 +50,15 @@
         @close="modals.repos = false" 
       />
 
-      <context-menu ref="contextMenu">
+      <context-menu ref="userContextMenu">
+        <context-item
+          type="warn"
+          @click.native="signOut">
+          Sign out from Gitssue
+        </context-item>
+      </context-menu>
+
+      <context-menu ref="reposContextMenu">
         <template slot-scope="{ data }">
           <context-item>Mute notifications</context-item>
           <context-item
@@ -101,6 +110,11 @@ export default {
     },
   },
   methods: {
+    signOut() {
+      utils.message('auth', { type: 'signOut' });
+      this.$refs.userContextMenu.hide();
+    },
+
     getUser() {
       utils.request({
         token: this.auth,
@@ -161,7 +175,7 @@ export default {
 
     removeManagedRepo({ index }) {
       utils.message('repos', { type: 'removeRepo', value: index });
-      this.$refs.contextMenu.hide();
+      this.$refs.reposContextMenu.hide();
     },
   },
   created() {
