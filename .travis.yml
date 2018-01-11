@@ -13,10 +13,9 @@ cache:
   directories:
     - "node_modules"
 
-if: tag IS present
-
 script:
   - npm run deploy
+    if: tag IS present
 
 env:
   - CLIENT_SECRET=$CLIENT_SECRET REFRESH_TOKEN=$REFRESH_TOKEN
