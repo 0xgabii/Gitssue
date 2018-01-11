@@ -8,7 +8,8 @@
     "start": "npm run dev",
     "dev": "node build/dev-server.js",
     "build": "node build/build.js",
-    "release": "node build/release.pre.js && npm run build && node build/release.zip.js"
+    "release": "node build/release.pre.js && npm run build && node build/release.zip.js",
+    "deploy": "node build/deploy.js"
   },
   "dependencies": {
     "axios": "^0.16.2",

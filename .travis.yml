@@ -1,0 +1,24 @@
+language: node_js
+
+node_js:
+  - "node"
+
+branches:
+  only:
+  - master
+
+install: npm install
+
+cache:
+  directories:
+    - "node_modules"
+
+script:
+  - npm run deploy
+ 
+deploy:
+  on:
+    tags: true
+
+env:
+  - CLIENT_SECRET=$CLIENT_SECRET REFRESH_TOKEN=$REFRESH_TOKEN
