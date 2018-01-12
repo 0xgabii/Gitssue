@@ -13,7 +13,7 @@ cache:
   directories:
     - "node_modules"
 
-script: if [[ $TRAVIS_TAG != '' ]]; then npm run deploy; fi
+script: npm run deploy
 
 env:
   - CLIENT_SECRET=$CLIENT_SECRET REFRESH_TOKEN=$REFRESH_TOKEN
