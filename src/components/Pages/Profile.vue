@@ -88,6 +88,8 @@ export default {
     },
 
     issues: [],
+
+    notiInterval: undefined,
   }),
   computed: {
     ...mapState('resource', [
@@ -210,9 +212,9 @@ export default {
       });
     },
     requestNoti() {
-      setInterval(() => {
+      this.notiInterval = setInterval(() => {
         utils.requestRest({
-          url: `https://api.github.com/users/${this.user.login}/events`,
+          url: `https://api.github.com/users/${this.user.login}/received_events`,
           method: 'get',
           params: {
             access_token: this.auth,
@@ -267,6 +269,9 @@ export default {
   },
   created() {
     this.request();
+  },
+  beforeDestroy() {
+    clearInterval(this.notiInterval);
   },
 };
 </script>
