@@ -1,4 +1,4 @@
-# Gitssue
+# Gitssue [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/iagekpbdeollpioaefgfkjfdogeofjcf.svg)]() [![Build Status](https://travis-ci.org/gomonk3037/Gitssue.svg?branch=master)](https://travis-ci.org/gomonk3037/Gitssue)
 
 Chrome extension - Allows you to manage issues outside of Github
 
@@ -11,6 +11,10 @@ Chrome extension - Allows you to manage issues outside of Github
 | UI focused on issue management |
 | :-------------: |
 | ![hero](docs/ui.gif) | 
+
+| Show received notifications |
+| :-------------: |
+| ![hero](docs/notifications.gif) | 
 
 | Support Tab/UnTab when using editor |
 | :-------------: |
@@ -30,7 +34,9 @@ Chrome extension - Allows you to manage issues outside of Github
 ## TODO
 
 - Manage issue
-  - Notification by desktop message, if user want
+  - Notification (issue/IssueComment created...)
+    - Repository
+    - ~~User~~
 - UI 
   - Customizable position & resizing by user
   - Tab design when viewing multiple issue (like 'vscode')
