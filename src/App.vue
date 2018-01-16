@@ -48,10 +48,10 @@ export default {
         value: { ui: { extend: bools } },
       });
     },
-    $route({ name, params }) {
+    $route({ name, params, query }) {
       utils.message('sync', {
         type: 'save',
-        value: { route: { name, params } },
+        value: { route: { name, params, query } },
       });
     },
     sync({ ui, route }) {
