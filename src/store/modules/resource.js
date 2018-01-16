@@ -9,6 +9,7 @@ export default {
   state: {
     auth: undefined,
     repos: [],
+    notifications: [],
     sync: {},
   },
   mutations: {
