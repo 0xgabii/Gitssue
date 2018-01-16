@@ -21,6 +21,7 @@
         "content/ui.js",
         "content/repos.js",
         "content/sync.js",
+        "content/notifications.js",
         "content/capture/index.js",
         "content/capture/lib/cropper.min.js",
         "content/inject/prod.js"
@@ -33,6 +34,7 @@
   ],
   "background": {
     "scripts": [
+      "background/notifications.js",
       "background/disableCSP.js",
       "background/index.js"
     ]
@@ -47,6 +49,7 @@
     "activeTab",
     "storage",
     "identity",
+    "notifications",
     "http://*/*",
     "https://*/*",
     "webRequest",

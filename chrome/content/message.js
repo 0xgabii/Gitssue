@@ -9,5 +9,6 @@ const message = {
     capture: ({ type, value }) => capture[type](value),
     repos: ({ type, value }) => repos[type](value),
     sync: ({ type, value }) => sync[type](value),
+    notifications: ({ type, value }) => notifications[type](value),
   },
 };

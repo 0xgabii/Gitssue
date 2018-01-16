@@ -1,4 +1,4 @@
-function oauth(port) {
+function auth(port) {
   const REDIRECT_URI = chrome.identity.getRedirectURL('oauth2');
   const CLIENT_ID = 'ecdb7ce9b19c87658e1b';
   const AUTH_URL = `https://github.com/login/oauth/authorize/?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=repo`;
@@ -31,7 +31,7 @@ function capture(port) {
   });
 }
 
-function saveToGoogleDrive(port, dataURL) {
+function upload(port, { dataURL }) {
   const chromeAuth = {
     interactive: true,
     scopes: ['https://www.googleapis.com/auth/drive.file'],
@@ -87,11 +87,12 @@ function saveToGoogleDrive(port, dataURL) {
 }
 
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === 'capture') {
-    port.onMessage.addListener(() => capture(port));
-  } else if (port.name === 'auth') {
-    port.onMessage.addListener(() => oauth(port));
-  } else {
-    port.onMessage.addListener(({ dataURL }) => saveToGoogleDrive(port, dataURL));
-  }
+  const scripts = {
+    capture,
+    auth,
+    upload,
+    notifications,
+  };
+
+  port.onMessage.addListener((data) => scripts[port.name](port, data));
 });
