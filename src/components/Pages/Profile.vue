@@ -88,6 +88,8 @@ export default {
     },
 
     issues: [],
+
+    notiInterval: undefined,
   }),
   computed: {
     ...mapState('resource', [
@@ -205,11 +207,71 @@ export default {
             name: repository.name,
           },
         }));
+
+        this.requestNoti();
       });
+    },
+    requestNoti() {
+      this.notiInterval = setInterval(() => {
+        utils.requestRest({
+          url: `https://api.github.com/users/${this.user.login}/received_events`,
+          method: 'get',
+          params: {
+            access_token: this.auth,
+          },
+        }).then((events) => {
+          const filteredEvent = events
+                                  .filter(event => event.type === 'IssuesEvent' || event.type === 'IssueCommentEvent')
+                                  .filter(event => !event.payload.issue.pull_request);
+
+          const transform = filteredEvent.map(({
+              id,
+              actor,
+              payload: { action, comment, issue },
+              repo,
+            }) => {
+            const [owner, name] = repo.name.split('/');
+
+            const structure = {
+              id,
+              contextMessage: repo.name,
+              iconUrl: actor.avatar_url,
+            };
+
+            if (comment) {
+              return {
+                ...structure,
+                title: comment.body,
+                message: `comment in #${issue.number} by ${actor.login}`,
+                route: {
+                  name: 'Issue',
+                  params: { owner, name, number: issue.number },
+                  query: { comment: comment.id },
+                },
+              };
+            }
+
+            return {
+              ...structure,
+              title: issue.title,
+              message: `#${issue.number} ${action} by ${actor.login}`,
+              route: {
+                name: 'Issue',
+                params: { owner, name, number: issue.number },
+              },
+            };
+          });
+
+          utils.message('notifications', { type: 'saveNotis', value: transform });
+        });
+      }, 10000);
     },
   },
   created() {
     this.request();
+  },
+  beforeDestroy() {
+    clearInterval(this.notiInterval);
   },
 };
 </script>

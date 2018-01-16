@@ -1,5 +1,7 @@
 <template>
-  <div :class="`comment comment--${data.databaseId}`">
+  <div 
+    :id="`comment-${data.databaseId}`"
+    class="comment">
     <div class="column column--left">
       <img
         class="comment__authorAvatar" 

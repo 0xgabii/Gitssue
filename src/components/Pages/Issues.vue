@@ -133,8 +133,8 @@ export default {
     },
   },
   watch: {
-    $route(to) {
-      if (!to.params.number && to.name !== 'NewIssue') {
+    $route(to, from) {
+      if ((to.params.owner && to.params.name) !== (from.params.owner && from.params.name)) {
         Object.assign(this.$data, this.$options.data());
         this.requestIssues();
       }

@@ -25,7 +25,7 @@
 
       <section class="content custom-scroll">
 
-        <loading-spinner v-if="loading" />
+        <loading-spinner v-if="loading.info" />
         
         <div v-else class="timeline">
           <div class="timeline-item">
@@ -50,7 +50,7 @@
             <add-comment
               :info="info"
               :viewer="viewer"
-              @update="requestIssue"
+              @update="requestIssue(true)"
             />
           </div>
         </div>
@@ -85,7 +85,7 @@
                 v-for="item in timeline"
                 v-if="item.__typename === 'IssueComment'"
                 v-scroll-to="{
-                  el: `.comment--${item.databaseId}`,
+                  el: `#comment-${item.databaseId}`,
                   container: '.issuePage .content',
                   offset: -25,
                 }"
@@ -112,6 +112,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import VueScrollTo from 'vue-scrollto';
 
 import utils from '../../../helpers/utils';
 
@@ -127,7 +128,11 @@ export default {
     info: {},
     timeline: [],
     viewer: {},
-    loading: false,
+
+    loading: {
+      info: false,
+      timeline: false,
+    },
   }),
   computed: {
     ...mapState('resource', [
@@ -135,20 +140,27 @@ export default {
     ]),
   },
   watch: {
-    $route: {
-      handler() {
+    $route(to, from) {
+      if (Number(to.params.number) !== Number(from.params.number)) {
         this.info = {};
         this.timeline = [];
-        this.loading = true;
 
         this.requestIssue();
-      },
-      immediate: true,
+      } else if (to.query.comment) {
+        this.scrollTo(`#comment-${to.query.comment}`);
+      }
+    },
+    'loading.timeline': function (bools) {
+      if (bools === false && this.$route.query.comment) {
+        this.scrollTo(`#comment-${this.$route.query.comment}`);
+      }
     },
   },
   methods: {
-    requestIssue() {
+    requestIssue(noLoading = false) {
       const { owner, name, number } = this.$route.params;
+
+      if (!noLoading) this.loading.info = true;
 
       utils.request({
         token: this.auth,
@@ -204,13 +216,15 @@ export default {
           ...viewer,
         };
 
-        this.loading = false;
+        this.loading.info = false;
 
         if (issue.timeline.totalCount) this.requestTimeline(issue.timeline.totalCount);
       });
     },
     requestTimeline(num) {
       const { owner, name, number } = this.$route.params;
+
+      this.loading.timeline = true;
 
       utils.request({
         token: this.auth,
@@ -257,8 +271,22 @@ export default {
         this.timeline = [
           ...issue.timeline.nodes.filter(node => Object.keys(node).length > 1),
         ];
+
+        this.loading.timeline = false;
       });
     },
+
+    scrollTo(el) {
+      this.$nextTick(() => {
+        VueScrollTo.scrollTo(el, 500, {
+          container: '.issuePage .content',
+          offset: -25,
+        });
+      });
+    },
+  },
+  created() {
+    this.requestIssue();
   },
   components: {
     IssueMain,
