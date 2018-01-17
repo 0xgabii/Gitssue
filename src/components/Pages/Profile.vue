@@ -212,6 +212,8 @@ export default {
       });
     },
     requestNoti() {
+      const turnedOnTime = new Date().getTime();
+
       this.notiInterval = setInterval(() => {
         utils.requestRest({
           url: `https://api.github.com/users/${this.user.login}/received_events`,
@@ -221,8 +223,9 @@ export default {
           },
         }).then((events) => {
           const filteredEvent = events
-                                  .filter(event => event.type === 'IssuesEvent' || event.type === 'IssueCommentEvent')
-                                  .filter(event => !event.payload.issue.pull_request);
+            .filter(event => event.type === 'IssuesEvent' || event.type === 'IssueCommentEvent')
+            .filter(event => new Date(event.created_at).getTime() >= turnedOnTime)
+            .filter(event => !event.payload.issue.pull_request);
 
           const transform = filteredEvent.map(({
               id,
@@ -264,7 +267,7 @@ export default {
 
           utils.message('notifications', { type: 'saveNotis', value: transform });
         });
-      }, 10000);
+      }, 5000);
     },
   },
   created() {
